@@ -28,6 +28,7 @@ import {
   Sun,
   Moon,
   Wallet,
+  Lock,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────
@@ -2063,6 +2064,7 @@ export default function App() {
   const [workProfileOpen, setWorkProfileOpen] = useState(false);
   const [editShiftDay, setEditShiftDay] = useState<number | null>(null);
   const [resetDataConfirmOpen, setResetDataConfirmOpen] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   const [hasSetupWorkProfile, setHasSetupWorkProfile] = useState<boolean>(() => {
     try {
@@ -2492,13 +2494,15 @@ export default function App() {
           {/* View Toggle */}
           <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${isDark ? "bg-zinc-900 border border-zinc-800" : "bg-slate-100 border border-slate-200"}`}>
              <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Expenses</button>
-             <button onClick={() => {
-                setViewMode("income");
-                if (!hasSetupWorkProfile) {
-                  setWorkProfileOpen(true);
-                  setHasSetupWorkProfile(true);
-                }
-             }} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "income" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Income &amp; Balance</button>
+             {/* Income & Balance — locked while under improvement */}
+             <button
+               onClick={() => setShowComingSoon(true)}
+               title="Coming Soon"
+               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all cursor-not-allowed select-none ${isDark ? "text-zinc-600 hover:text-zinc-500" : "text-slate-400 hover:text-slate-500"}`}
+             >
+               <Lock size={10} className="shrink-0" />
+               <span>Income &amp; Balance</span>
+             </button>
           </div>
 
           {/* Metric cards */}
@@ -2923,6 +2927,61 @@ export default function App() {
                 setHasSetupWorkProfile(false);
                 setResetDataConfirmOpen(false);
               }} className="flex-1 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-lg transition-colors">Yes, Reset</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── COMING SOON MODAL ─────────────────────────────── */}
+      {showComingSoon && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => setShowComingSoon(false)}
+          style={{ animation: "fadeIn 0.15s ease" }}
+        >
+          <div
+            className={`w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ${
+              isDark ? "bg-zinc-950 border border-zinc-800" : "bg-white border border-slate-200"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top accent bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-pink-600 via-pink-500 to-rose-400" />
+
+            {/* Content */}
+            <div className="p-6 flex flex-col items-center text-center">
+              {/* Icon badge */}
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${
+                isDark ? "bg-pink-950/30 border border-pink-500/20" : "bg-pink-50 border border-pink-200"
+              }`}>
+                <Lock size={24} className="text-pink-500" />
+              </div>
+
+              <h2 className={`text-lg font-extrabold mb-1 ${
+                isDark ? "text-zinc-100" : "text-slate-800"
+              }`}>Feature Under Construction</h2>
+
+              <p className={`text-sm leading-relaxed mb-5 ${
+                isDark ? "text-zinc-400" : "text-slate-500"
+              }`}>
+                We&apos;re actively rebuilding the <strong className={isDark ? "text-pink-400" : "text-pink-600"}>Income &amp; Balance</strong> section
+                to give you a smarter, more accurate forecasting experience.
+                Hang tight — it&apos;s going to be worth the wait.
+              </p>
+
+              {/* Tag */}
+              <div className={`flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 ${
+                isDark ? "bg-pink-950/30 text-pink-400 border border-pink-500/20" : "bg-pink-50 text-pink-600 border border-pink-200"
+              }`}>
+                <RefreshCcw size={11} className="animate-spin [animation-duration:3s]" />
+                Improvements in progress
+              </div>
+
+              <button
+                onClick={() => setShowComingSoon(false)}
+                className="w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-[0.98] text-white text-sm font-bold transition-all shadow-lg shadow-pink-500/20"
+              >
+                Got it, thanks!
+              </button>
             </div>
           </div>
         </div>
