@@ -149,39 +149,8 @@ const CURRENCIES: Currency[] = [
 //  INITIAL MOCK DATA
 // ─────────────────────────────────────────────
 
-const INITIAL_BILLS_AND_LOANS: BillOrLoan[] = [
-  // Bills
-  { id: "b1", title: "Rent", amount: 1850, type: "bill", frequency: "monthly", due_day: 1 },
-  { id: "b2", title: "Electricity", amount: 120, type: "bill", frequency: "monthly", due_day: 8 },
-  { id: "b3", title: "Internet", amount: 65, type: "bill", frequency: "monthly", due_day: 12 },
-  { id: "b4", title: "Netflix", amount: 18, type: "bill", frequency: "monthly", due_day: 15 },
-  { id: "b5", title: "Spotify", amount: 12, type: "bill", frequency: "monthly", due_day: 15 },
-  { id: "b6", title: "Health Insurance", amount: 340, type: "bill", frequency: "monthly", due_day: 20 },
-  { id: "b7", title: "Gym Membership", amount: 45, type: "bill", frequency: "monthly", due_day: 22 },
-  { id: "b8", title: "Phone Plan", amount: 75, type: "bill", frequency: "monthly", due_day: 25 },
-  { id: "b9", title: "Cloud Storage", amount: 10, type: "bill", frequency: "monthly", due_day: 28 },
-  // One-time bills
-  { id: "b10", title: "Car Registration", amount: 225, type: "bill", frequency: "once", specific_date: "2026-06-10" },
-  { id: "b11", title: "HVAC Service", amount: 180, type: "bill", frequency: "once", specific_date: "2026-05-19" },
-  // Loans
-  { id: "l1", title: "Car Loan", amount: 420, type: "loan", frequency: "monthly", due_day: 5 },
-  { id: "l2", title: "Student Loan", amount: 280, type: "loan", frequency: "monthly", due_day: 10 },
-  { id: "l3", title: "Personal Loan", amount: 190, type: "loan", frequency: "monthly", due_day: 18 },
-  { id: "l4", title: "Home Equity", amount: 510, type: "loan", frequency: "monthly", due_day: 23 },
-  // One-time loan payment
-  { id: "l5", title: "Friend Repayment", amount: 300, type: "loan", frequency: "once", specific_date: "2026-05-31" },
-  // Income
-  { id: "i1", title: "Salary", amount: 4500, type: "income", frequency: "bimonthly", due_days: [1, 15] },
-  { id: "i2", title: "Side Hustle", amount: 200, type: "income", frequency: "weekly", due_day_of_week: 5 }, // Friday
-];
-
-const INITIAL_PAYMENT_HISTORY: PaymentRecord[] = [
-  { item_id: "b1", payment_month: 5, payment_year: 2026, status: "paid" },
-  { item_id: "b2", payment_month: 5, payment_year: 2026, status: "paid" },
-  { item_id: "l1", payment_month: 5, payment_year: 2026, status: "paid" },
-  { item_id: "b4", payment_month: 5, payment_year: 2026, status: "paid" },
-  { item_id: "b3", payment_month: 6, payment_year: 2026, status: "paid" },
-];
+const INITIAL_BILLS_AND_LOANS: BillOrLoan[] = [];
+const INITIAL_PAYMENT_HISTORY: PaymentRecord[] = [];
 
 // ─────────────────────────────────────────────
 //  HELPERS
