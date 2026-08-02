@@ -544,7 +544,7 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
           <span className={`text-[9px] font-semibold ${isDark ? "text-zinc-500" : "text-slate-400"}`}>{dayItems.length} items</span>
         )}
       </div>
-      <div className="flex flex-col gap-1 flex-1">
+      <div className="flex flex-col gap-1 flex-1 overflow-y-auto max-h-[6.5rem] sm:max-h-none">
         {viewMode === "income" && shiftEarnings && (
           <div className={`p-1.5 rounded border flex items-center justify-between ${
             shiftEarnings.isWork 
@@ -881,7 +881,7 @@ function AddItemModal({ open, currency, theme, onClose, onAdd }: AddItemModalPro
         </label>
         
         {/* Presets and options button grid */}
-        <div className="grid grid-cols-4 gap-2 mb-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
           <button
             type="button"
             onClick={() => setForm((f) => ({ ...f, duration_mode: "ongoing", has_end_date: false }))}
@@ -914,7 +914,7 @@ function AddItemModal({ open, currency, theme, onClose, onAdd }: AddItemModalPro
           ))}
         </div>
 
-        <div className="grid grid-cols-4 gap-2 mb-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
           {[24, 36, 60].map((m) => (
             <button
               key={m}
@@ -1003,13 +1003,13 @@ function AddItemModal({ open, currency, theme, onClose, onAdd }: AddItemModalPro
           }
         }
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/75 backdrop-blur-sm"
       style={{ animation: "fadeIn 0.15s ease" }}
     >
       <style>{`@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(16px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
 
       <div
-        className={`w-full max-w-md border rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden ${s.bg}`}
+        className={`w-full max-w-md border rounded-2xl shadow-2xl flex flex-col max-h-[96vh] sm:max-h-[92vh] overflow-hidden ${s.bg}`}
         style={{ animation: "slideUp 0.2s cubic-bezier(0.16,1,0.3,1)" }}
       >
         {/* Modal header */}
@@ -1362,7 +1362,7 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
   const drawerRef = useRef<HTMLDivElement>(null);
   const isDark = theme === "dark";
   const s = {
-    bg: isDark ? "bg-[#09090b] text-zinc-150 border-l border-zinc-900/80" : "bg-white text-slate-800 border-l border-slate-200",
+    bg: isDark ? "bg-[#09090b] text-zinc-150 sm:border-l border-zinc-900/80" : "bg-white text-slate-800 sm:border-l border-slate-200",
     border: isDark ? "border-zinc-900 bg-zinc-950" : "border-slate-150 bg-slate-50/50",
     cardBg: isDark ? "bg-zinc-900/30 border-zinc-850/50 hover:border-zinc-800" : "bg-slate-50 border-slate-200/60 hover:bg-slate-100/50 hover:border-slate-300",
     textSub: isDark ? "text-zinc-500" : "text-slate-400",
@@ -1430,7 +1430,7 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
         className={`fixed top-0 right-0 z-40 h-full w-full max-w-md shadow-2xl flex flex-col transition-transform duration-300 ease-out ${s.bg} ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
-        <div className={`flex items-center justify-between px-5 py-4 border-b ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
+        <div className={`flex items-center justify-between px-4 sm:px-5 py-4 border-b ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
           <div className="flex items-center gap-2">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
               <Settings2 size={16} className="text-pink-600" />
@@ -1449,7 +1449,7 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
         </div>
 
         {/* Actions bar */}
-        <div className={`px-5 py-3 border-b space-y-3 ${isDark ? "border-zinc-900/80" : "border-slate-150"}`}>
+        <div className={`px-4 sm:px-5 py-3 border-b space-y-3 ${isDark ? "border-zinc-900/80" : "border-slate-150"}`}>
           {/* Filter tabs */}
           <div className={`flex gap-1 p-1 rounded-xl border ${isDark ? "bg-zinc-900 border-zinc-900" : "bg-slate-100 border-slate-150"}`}>
             {(["all", "bill", "loan"] as const).map(f => (
@@ -1491,7 +1491,7 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
         </div>
 
         {/* Item list */}
-        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-2">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-3 space-y-2">
           {filtered.length === 0 ? (
             <div className={`flex flex-col items-center justify-center h-40 ${isDark ? "text-zinc-650" : "text-slate-400"}`}>
               <Receipt size={32} className="mb-2 opacity-40" />
@@ -1553,7 +1553,7 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
         </div>
 
         {/* Footer — danger zone */}
-        <div className={`px-5 py-4 border-t ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
+        <div className={`px-4 sm:px-5 py-4 border-t ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
           {!confirmAll ? (
             <div className="flex items-center gap-3">
               <button
@@ -2392,7 +2392,7 @@ export default function App() {
       <header className={`sticky top-0 z-20 backdrop-blur-xl border-b transition-colors duration-300 ${s.headerBg}`}>
         <div className="max-w-7xl mx-auto px-4 py-4 relative z-10">
           {/* Title row */}
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-3">
               <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
                 <CalendarDays size={18} className="text-pink-600" />
@@ -2403,96 +2403,102 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Currency picker */}
-              <CurrencyPicker selected={currency} onChange={setCurrency} />
+            {/* Right controls: stacks vertically on mobile, single row on sm+ */}
+            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+              {/* Action buttons row */}
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* Currency picker */}
+                <CurrencyPicker selected={currency} onChange={setCurrency} />
 
-              {/* Reset Data Button */}
-              <button
-                onClick={() => setResetDataConfirmOpen(true)}
-                title="Reset All Data"
-                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
-              >
-                <Trash2 size={15} />
-              </button>
-
-              {/* Theme Selector Button */}
-              <button
-                onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                className={`p-2.5 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
-                  isDark
-                    ? "bg-zinc-900 border-zinc-800 text-pink-400 hover:text-pink-300 hover:bg-zinc-850"
-                    : "bg-white border-slate-200 text-pink-650 hover:text-pink-550 hover:bg-slate-50 shadow-sm"
-                }`}
-              >
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
-              </button>
-
-              {/* Work Profile Setup Button */}
-              {viewMode === "income" && (
+                {/* Reset Data Button */}
                 <button
-                  onClick={() => setWorkProfileOpen(true)}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                  onClick={() => setResetDataConfirmOpen(true)}
+                  title="Reset All Data"
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
                 >
-                  <Settings2 size={14} />
-                  <span className="hidden sm:inline">Work Profile</span>
+                  <Trash2 size={15} />
                 </button>
-              )}
 
-              {/* Add item button */}
-              <button
-                onClick={() => setAddOpen(true)}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${s.primaryBtn}`}
-              >
-                <Plus size={14} />
-                <span className="hidden sm:inline">Add Item</span>
-              </button>
+                {/* Theme Selector Button */}
+                <button
+                  onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+                  title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
+                    isDark
+                      ? "bg-zinc-900 border-zinc-800 text-pink-400 hover:text-pink-300 hover:bg-zinc-850"
+                      : "bg-white border-slate-200 text-pink-650 hover:text-pink-550 hover:bg-slate-50 shadow-sm"
+                  }`}
+                >
+                  {isDark ? <Sun size={15} /> : <Moon size={15} />}
+                </button>
 
-              {/* Manage button */}
-              <button
-                onClick={() => setManageOpen(true)}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border ${s.secondaryBtn}`}
-              >
-                <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
-                <span className="hidden sm:inline">Manage</span>
-                {billsAndLoans.length > 0 && (
-                  <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
-                    {billsAndLoans.length}
-                  </span>
+                {/* Work Profile Setup Button */}
+                {viewMode === "income" && (
+                  <button
+                    onClick={() => setWorkProfileOpen(true)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                  >
+                    <Settings2 size={14} />
+                    <span className="hidden sm:inline">Work Profile</span>
+                  </button>
                 )}
-              </button>
 
-              {/* Month navigation */}
-              <button
-                onClick={prevMonth}
-                className={`w-8.5 h-8.5 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <div className="text-center min-w-32">
-                <p className={`text-base font-extrabold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
-                <p className={`text-xs ${s.textMuted}`}>{activeYear}</p>
+                {/* Add item button */}
+                <button
+                  onClick={() => setAddOpen(true)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${s.primaryBtn}`}
+                >
+                  <Plus size={14} />
+                  <span className="hidden sm:inline">Add Item</span>
+                </button>
+
+                {/* Manage button */}
+                <button
+                  onClick={() => setManageOpen(true)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border ${s.secondaryBtn}`}
+                >
+                  <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
+                  <span className="hidden sm:inline">Manage</span>
+                  {billsAndLoans.length > 0 && (
+                    <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                      {billsAndLoans.length}
+                    </span>
+                  )}
+                </button>
               </div>
-              <button
-                onClick={nextMonth}
-                className={`w-8.5 h-8.5 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
-              >
-                <ChevronRight size={16} />
-              </button>
+
+              {/* Month navigation row */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={prevMonth}
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <div className="text-center min-w-[5rem] sm:min-w-32">
+                  <p className={`text-sm sm:text-base font-extrabold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
+                  <p className={`text-xs ${s.textMuted}`}>{activeYear}</p>
+                </div>
+                <button
+                  onClick={nextMonth}
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           </div>
 
           {/* View Toggle */}
-          <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-fit ${isDark ? "bg-zinc-900 border border-zinc-800" : "bg-slate-100 border border-slate-200"}`}>
-             <button onClick={() => setViewMode("expenses")} className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Expenses</button>
+          <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${isDark ? "bg-zinc-900 border border-zinc-800" : "bg-slate-100 border border-slate-200"}`}>
+             <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Expenses</button>
              <button onClick={() => {
                 setViewMode("income");
                 if (!hasSetupWorkProfile) {
                   setWorkProfileOpen(true);
                   setHasSetupWorkProfile(true);
                 }
-             }} className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "income" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Income &amp; Balance</button>
+             }} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "income" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Income &amp; Balance</button>
           </div>
 
           {/* Metric cards */}
@@ -2579,7 +2585,7 @@ export default function App() {
           )}
 
           {/* Legend */}
-          <div className={`mt-3 flex items-center gap-4 text-xs font-medium ${s.textSub}`}>
+          <div className={`mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium ${s.textSub}`}>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-indigo-500/20 border border-indigo-500/50" />
               <span>Bills</span>
