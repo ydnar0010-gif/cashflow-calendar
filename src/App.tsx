@@ -422,7 +422,7 @@ function EventCard({ item, paid, missed, currency, onToggle, theme = "dark" }: E
 
   return (
     <button
-      onClick={() => onToggle(item.id)}
+      onClick={(e) => { e.stopPropagation(); onToggle(item.id); }}
       title={paid ? "Mark as unpaid" : "Mark as paid"}
       className={`w-full text-left rounded-lg p-1.5 transition-all duration-200 cursor-pointer group ${base} ${paid ? "opacity-50" : "opacity-100"} ${missed ? "border-rose-500 ring-1 ring-rose-500/50" : ""}`}
     >
@@ -472,11 +472,12 @@ interface DayCellProps {
   payoutAmount?: number;
   onEditShift?: (day: number) => void;
   dailyBalance?: number;
+  onSelectDay?: (day: number) => void;
 }
 
-function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills, onToggle, currency, theme, viewMode, shiftEarnings, payoutAmount, onEditShift, dailyBalance }: DayCellProps) {
+function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills, onToggle, currency, theme, viewMode, shiftEarnings, payoutAmount, onEditShift, dailyBalance, onSelectDay }: DayCellProps) {
   if (day === null) {
-    return <div className={`min-h-24 md:min-h-28 rounded-xl border-2 ${
+    return <div className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 ${
       theme === "dark" ? "bg-zinc-950/20 border-zinc-800/40" : "bg-slate-100/50 border-slate-300"
     }`} />;
   }
@@ -492,9 +493,15 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
 
   return (
     <div 
-      onClick={() => { if (viewMode === "income" && onEditShift) onEditShift(day); }}
-      className={`min-h-24 md:min-h-28 rounded-xl border-2 p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200
-      ${viewMode === "income" ? "cursor-pointer hover:border-emerald-400/60" : ""}
+      onClick={() => {
+        if (viewMode === "income" && onEditShift) {
+          onEditShift(day);
+        } else if (onSelectDay && day !== null) {
+          onSelectDay(day);
+        }
+      }}
+      className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 p-1 sm:p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200 cursor-pointer
+      ${viewMode === "income" ? "hover:border-emerald-400/60" : "sm:cursor-default"}
       ${isToday 
         ? "border-pink-500 bg-pink-500/5 shadow-lg shadow-pink-500/5"
         : hasDue 
@@ -504,17 +511,39 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
       <div className="flex items-center justify-between mb-0.5">
         <span className={`text-xs md:text-sm font-bold leading-none
           ${isToday 
-            ? "bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-md shadow-pink-500/20"
+            ? "bg-pink-600 text-white w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] sm:text-xs shadow-md shadow-pink-500/20"
             : hasDue 
               ? isDark ? "text-zinc-300" : "text-slate-800" 
               : isDark ? "text-zinc-500" : "text-slate-400"}`}>
           {day}
         </span>
         {dayItems.length > 1 && (
-          <span className={`text-[9px] font-semibold ${isDark ? "text-zinc-500" : "text-slate-400"}`}>{dayItems.length} items</span>
+          <span className={`hidden sm:inline-block text-[9px] font-semibold ${isDark ? "text-zinc-500" : "text-slate-400"}`}>{dayItems.length} items</span>
         )}
       </div>
-      <div className="flex flex-col gap-1 flex-1 overflow-y-auto max-h-[6.5rem] sm:max-h-none">
+
+      {/* Mobile view (< 640px): Compact colored indicator dots */}
+      <div className="flex sm:hidden flex-wrap gap-1 items-center mt-0.5">
+        {payoutAmount !== undefined && payoutAmount > 0 && (
+          <div title="Payout" className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shrink-0" />
+        )}
+        {visibleItems.map((item) => {
+          const paid = isPaid(item.id, month, year, paymentHistory);
+          let dotColor = "bg-indigo-500";
+          if (item.type === "income") dotColor = "bg-emerald-500";
+          else if (item.type === "loan") dotColor = "bg-orange-500";
+          return (
+            <div
+              key={item.id}
+              title={item.title}
+              className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${paid ? "opacity-40 ring-1 ring-white/40" : "shadow-sm"}`}
+            />
+          );
+        })}
+      </div>
+
+      {/* Desktop view (>= 640px): Full item cards */}
+      <div className="hidden sm:flex flex-col gap-1 flex-1 overflow-y-auto sm:max-h-none">
         {viewMode === "income" && shiftEarnings && (
           <div className={`p-1.5 rounded border flex items-center justify-between ${
             shiftEarnings.isWork 
@@ -550,21 +579,212 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
         ))}
       </div>
       {dailyBalance !== undefined && (
-        <div className="mt-auto pt-1 flex justify-end shrink-0">
-          <span className={`text-[9px] font-bold tracking-tight px-1.5 py-0.5 rounded transition-all duration-200
+        <div className="mt-auto pt-1.5 pb-1 flex justify-end shrink-0 w-full overflow-hidden">
+          <span className={`text-[9px] sm:text-[10px] font-bold tracking-tight px-1 py-0.5 sm:px-1.5 rounded transition-all duration-200 truncate max-w-full block text-right leading-none
             ${dailyBalance < 0 
               ? isDark 
                 ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" 
                 : "bg-rose-55 text-rose-700 border border-rose-200" 
               : isDark 
-                ? "text-zinc-500 hover:text-zinc-400" 
-                : "text-slate-400 hover:text-slate-650"
+                ? "text-zinc-400 sm:text-zinc-500 hover:text-zinc-300" 
+                : "text-slate-600 sm:text-slate-400 hover:text-slate-700"
             }`}
           >
             {formatCurrency(dailyBalance, currency)}
           </span>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+//  DAY DETAILS MODAL (BOTTOM SHEET)
+// ─────────────────────────────────────────────
+
+interface DayDetailsModalProps {
+  day: number;
+  month: number;
+  year: number;
+  items: BillOrLoan[];
+  paymentHistory: PaymentRecord[];
+  missedBills: Set<string>;
+  onToggle: (id: string) => void;
+  currency: Currency;
+  theme: "light" | "dark";
+  dailyBalance?: number;
+  payoutAmount?: number;
+  onClose: () => void;
+  onAddNew: () => void;
+}
+
+function DayDetailsModal({
+  day,
+  month,
+  year,
+  items,
+  paymentHistory,
+  missedBills,
+  onToggle,
+  currency,
+  theme,
+  dailyBalance,
+  payoutAmount,
+  onClose,
+  onAddNew,
+}: DayDetailsModalProps) {
+  const isDark = theme === "dark";
+  const dateStr = new Date(year, month, day).toLocaleDateString(currency.locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`w-full sm:max-w-md max-h-[85vh] rounded-t-3xl sm:rounded-2xl border-t sm:border shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 ${
+          isDark ? "bg-[#0c0c0e] border-zinc-800 text-zinc-100" : "bg-white border-slate-200 text-slate-800"
+        }`}
+      >
+        {/* Swipe Handle for Mobile */}
+        <div className="pt-3 pb-1 flex justify-center sm:hidden">
+          <div className={`w-12 h-1.5 rounded-full ${isDark ? "bg-zinc-800" : "bg-slate-200"}`} />
+        </div>
+
+        {/* Header */}
+        <div className={`px-5 py-4 border-b flex items-center justify-between gap-2 ${
+          isDark ? "border-zinc-900 bg-zinc-950/80" : "border-slate-150 bg-slate-50"
+        }`}>
+          <div className="min-w-0">
+            <h3 className={`text-base font-extrabold truncate ${isDark ? "text-pink-500" : "text-slate-900"}`}>
+              {dateStr}
+            </h3>
+            {dailyBalance !== undefined && (
+              <p className={`text-xs mt-0.5 font-medium ${isDark ? "text-zinc-400" : "text-slate-500"}`}>
+                Projected Balance:{" "}
+                <span className={`font-bold ${dailyBalance < 0 ? "text-rose-500" : isDark ? "text-emerald-400" : "text-emerald-700"}`}>
+                  {formatCurrency(dailyBalance, currency)}
+                </span>
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${
+              isDark ? "bg-zinc-900 text-zinc-400 hover:text-zinc-200" : "bg-slate-200 text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Items List */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+          {payoutAmount !== undefined && payoutAmount > 0 && (
+            <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-between text-emerald-600 dark:text-emerald-400 shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Coins size={16} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide">Expected Payout</p>
+                  <p className="text-[10px] opacity-80">Scheduled Income</p>
+                </div>
+              </div>
+              <span className="text-sm font-extrabold">{formatCurrency(payoutAmount, currency)}</span>
+            </div>
+          )}
+
+          {items.length === 0 && (!payoutAmount || payoutAmount === 0) ? (
+            <div className={`text-center py-10 ${isDark ? "text-zinc-500" : "text-slate-400"}`}>
+              <Receipt size={32} className="mx-auto mb-2 opacity-40" />
+              <p className="text-xs font-semibold">No bills, loans, or payouts scheduled for this day.</p>
+            </div>
+          ) : (
+            items.map((item) => {
+              const paid = isPaid(item.id, month, year, paymentHistory);
+              const missed = missedBills.has(item.id);
+              const isIncome = item.type === "income";
+              const isLoan = item.type === "loan";
+              let badgeColor = isDark ? "bg-indigo-950 text-indigo-400 border-indigo-800" : "bg-indigo-50 text-indigo-700 border-indigo-200";
+              if (isIncome) badgeColor = isDark ? "bg-emerald-950 text-emerald-400 border-emerald-800" : "bg-emerald-50 text-emerald-700 border-emerald-200";
+              else if (isLoan) badgeColor = isDark ? "bg-orange-950 text-orange-400 border-orange-800" : "bg-orange-50 text-orange-700 border-orange-200";
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => onToggle(item.id)}
+                  className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 shadow-sm ${
+                    paid
+                      ? isDark ? "bg-zinc-900/40 border-zinc-800 opacity-60" : "bg-slate-100 border-slate-200 opacity-70"
+                      : isLoan
+                        ? isDark ? "bg-orange-500/10 border-orange-500/30 hover:border-orange-500/50" : "bg-orange-50/60 border-orange-200 hover:border-orange-300"
+                        : isIncome
+                          ? isDark ? "bg-emerald-500/10 border-emerald-500/30 hover:border-emerald-500/50" : "bg-emerald-50/60 border-emerald-200 hover:border-emerald-300"
+                          : isDark ? "bg-indigo-500/10 border-indigo-500/30 hover:border-indigo-500/50" : "bg-indigo-50/60 border-indigo-200 hover:border-indigo-300"
+                  } ${missed && !paid ? "border-rose-500 ring-1 ring-rose-500" : ""}`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${badgeColor}`}>
+                      {isIncome ? <Banknote size={16} /> : isLoan ? <CreditCard size={16} /> : <Receipt size={16} />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm font-bold truncate ${paid ? "line-through opacity-80" : ""}`}>
+                        {item.title}
+                      </p>
+                      <span className="text-[10px] font-semibold opacity-75 uppercase tracking-wider block mt-0.5">
+                        {item.frequency} • {item.type}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-sm font-extrabold">{formatCurrency(item.amount, currency)}</span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onToggle(item.id); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                        paid
+                          ? isDark ? "bg-emerald-950/80 text-emerald-400 border border-emerald-800" : "bg-emerald-100 text-emerald-800"
+                          : isDark ? "bg-zinc-800 hover:bg-zinc-700 text-zinc-300" : "bg-slate-200 hover:bg-slate-300 text-slate-700"
+                      }`}
+                    >
+                      {paid ? <CheckCircle2 size={13} /> : <Circle size={13} />}
+                      <span>{paid ? "Paid" : "Pay"}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className={`p-4 border-t flex items-center justify-between gap-3 ${
+          isDark ? "border-zinc-900 bg-zinc-950" : "border-slate-150 bg-slate-50"
+        }`}>
+          <button
+            onClick={() => { onClose(); onAddNew(); }}
+            className="flex-1 py-3 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+          >
+            <Plus size={15} />
+            <span>Add Item to This Day</span>
+          </button>
+          <button
+            onClick={onClose}
+            className={`px-6 py-3 rounded-xl text-xs font-bold transition-all ${
+              isDark ? "bg-zinc-800 hover:bg-zinc-700 text-zinc-300" : "bg-slate-200 hover:bg-slate-300 text-slate-700"
+            }`}
+          >
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -577,6 +797,7 @@ interface AddItemModalProps {
   open: boolean;
   currency: Currency;
   theme: "light" | "dark";
+  initialDueDay?: number;
   onClose: () => void;
   onAdd: (item: BillOrLoan) => void;
 }
@@ -609,7 +830,7 @@ const EMPTY_FORM = {
   duration_custom: "12",
 };
 
-function AddItemModal({ open, currency, theme, onClose, onAdd }: AddItemModalProps) {
+function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: AddItemModalProps) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const isDark = theme === "dark";
@@ -638,13 +859,20 @@ function AddItemModal({ open, currency, theme, onClose, onAdd }: AddItemModalPro
   // Reset on open
   useEffect(() => {
     if (open) {
-      setForm(EMPTY_FORM);
+      const dueDayStr = initialDueDay ? String(initialDueDay) : EMPTY_FORM.due_day;
+      const specDate = initialDueDay ? `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart(2, "0")}-${String(initialDueDay).padStart(2, "0")}` : EMPTY_FORM.specific_date;
+      setForm({
+        ...EMPTY_FORM,
+        due_day: dueDayStr,
+        due_day_a: dueDayStr,
+        specific_date: specDate,
+      });
       setErrors({});
       setCustomDates([]);
       setCustomDateInput("");
       setTimeout(() => titleRef.current?.focus(), 80);
     }
-  }, [open]);
+  }, [open, initialDueDay]);
 
   // Reactive duration calculator
   useEffect(() => {
@@ -2034,6 +2262,8 @@ export default function App() {
   const [editShiftDay, setEditShiftDay] = useState<number | null>(null);
   const [resetDataConfirmOpen, setResetDataConfirmOpen] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
+  const [selectedDayForModal, setSelectedDayForModal] = useState<number | null>(null);
+  const [addModalInitialDay, setAddModalInitialDay] = useState<number | undefined>(undefined);
 
   const [hasSetupWorkProfile, setHasSetupWorkProfile] = useState<boolean>(() => {
     try {
@@ -2416,7 +2646,7 @@ export default function App() {
 
                 {/* Add item button */}
                 <button
-                  onClick={() => setAddOpen(true)}
+                  onClick={() => { setAddModalInitialDay(undefined); setAddOpen(true); }}
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${s.primaryBtn}`}
                 >
                   <Plus size={14} />
@@ -2708,6 +2938,7 @@ export default function App() {
                 payoutAmount={day !== null ? activePayouts.get(day) : undefined}
                 onEditShift={setEditShiftDay}
                 dailyBalance={day !== null ? dailyBalances.get(day) : undefined}
+                onSelectDay={setSelectedDayForModal}
               />
             );
           })}
@@ -2830,11 +3061,34 @@ export default function App() {
         onReset={handleReset}
       />
 
+      {/* ── DAY DETAILS MODAL ───────────────────── */}
+      {selectedDayForModal !== null && (
+        <DayDetailsModal
+          day={selectedDayForModal}
+          month={activeMonth}
+          year={activeYear}
+          items={getItemsForDay(billsAndLoans, selectedDayForModal, activeMonth, activeYear)}
+          paymentHistory={paymentHistory}
+          missedBills={missedBills}
+          onToggle={togglePayment}
+          currency={currency}
+          theme={theme}
+          dailyBalance={dailyBalances.get(selectedDayForModal)}
+          payoutAmount={activePayouts.get(selectedDayForModal)}
+          onClose={() => setSelectedDayForModal(null)}
+          onAddNew={() => {
+            setAddModalInitialDay(selectedDayForModal);
+            setAddOpen(true);
+          }}
+        />
+      )}
+
       {/* ── ADD ITEM MODAL ─────────────────────── */}
       <AddItemModal
         open={addOpen}
         currency={currency}
         theme={theme}
+        initialDueDay={addModalInitialDay}
         onClose={() => setAddOpen(false)}
         onAdd={handleAddItem}
       />
