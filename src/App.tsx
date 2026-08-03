@@ -2386,11 +2386,13 @@ export default function App() {
           // Current month - calculate daily with pivot and paid overlap bypass
           let running = bal;
           const totalDaysInMonth = new Date(y, m + 1, 0).getDate();
-          const monthWindows = getSalaryWindows(y, m, workProfile.cutOffRanges, workProfile.salaryDates);
           const payoutMap = new Map<number, number>();
-          for (const w of monthWindows) {
-            const pDay = parseInt(w.payoutDate.split("-")[2]);
-            payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+          if (hasSetupWorkProfile) {
+            const monthWindows = getSalaryWindows(y, m, workProfile.cutOffRanges, workProfile.salaryDates);
+            for (const w of monthWindows) {
+              const pDay = parseInt(w.payoutDate.split("-")[2]);
+              payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+            }
           }
           for (let d = 1; d <= totalDaysInMonth; d++) {
             if (d === todayDay) {
@@ -2413,11 +2415,13 @@ export default function App() {
           // Future month - project daily and carry forward
           let running = bal;
           const totalDaysInMonth = new Date(y, m + 1, 0).getDate();
-          const monthWindows = getSalaryWindows(y, m, workProfile.cutOffRanges, workProfile.salaryDates);
           const payoutMap = new Map<number, number>();
-          for (const w of monthWindows) {
-            const pDay = parseInt(w.payoutDate.split("-")[2]);
-            payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+          if (hasSetupWorkProfile) {
+            const monthWindows = getSalaryWindows(y, m, workProfile.cutOffRanges, workProfile.salaryDates);
+            for (const w of monthWindows) {
+              const pDay = parseInt(w.payoutDate.split("-")[2]);
+              payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+            }
           }
           for (let d = 1; d <= totalDaysInMonth; d++) {
             if (payoutMap.has(d)) {
@@ -2435,7 +2439,7 @@ export default function App() {
           const inc = computeMonthlyTotal(billsAndLoans, m, y, "income");
           const exp = computeMonthlyTotal(billsAndLoans, m, y, "bill+loan");
           bal += (inc - exp);
-          if (y > startY || (y === startY && m >= startM)) {
+          if (hasSetupWorkProfile && (y > startY || (y === startY && m >= startM))) {
             const windows = getSalaryWindows(y, m, workProfile.cutOffRanges, workProfile.salaryDates);
             for (const w of windows) {
               bal += computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length);
@@ -2452,11 +2456,13 @@ export default function App() {
     const dailyBalances = new Map<number, number>();
     
     // Compute current month salary payouts
-    const currentMonthWindows = getSalaryWindows(activeYear, activeMonth, workProfile.cutOffRanges, workProfile.salaryDates);
     const payoutMap = new Map<number, number>();
-    for (const w of currentMonthWindows) {
-      const pDay = parseInt(w.payoutDate.split("-")[2]);
-      payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+    if (hasSetupWorkProfile) {
+      const currentMonthWindows = getSalaryWindows(activeYear, activeMonth, workProfile.cutOffRanges, workProfile.salaryDates);
+      for (const w of currentMonthWindows) {
+        const pDay = parseInt(w.payoutDate.split("-")[2]);
+        payoutMap.set(pDay, (payoutMap.get(pDay) || 0) + computeWindowPayout(w, workProfile, shiftOverrides, workProfile.salaryDates.length));
+      }
     }
     
     const isCurrentActiveMonth = activeYear === todayYear && activeMonth === todayMonth;
@@ -2464,8 +2470,10 @@ export default function App() {
 
     for (let d = 1; d <= totalDays; d++) {
       const iso = `${activeYear}-${String(activeMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      const shift = computeShiftEarnings(iso, workProfile, shiftOverrides[iso]);
-      shiftTotal += shift.total;
+      if (hasSetupWorkProfile) {
+        const shift = computeShiftEarnings(iso, workProfile, shiftOverrides[iso]);
+        shiftTotal += shift.total;
+      }
 
       // Pivot check for current active month
       if (isCurrentActiveMonth && d === todayDay) {
@@ -2538,11 +2546,11 @@ export default function App() {
       dailyBalances, 
       lowestProjectedBalance 
     };
-  }, [startingBalance, billsAndLoans, activeMonth, activeYear, totalDays, workProfile, shiftOverrides, currentBankBalance, paymentHistory]);
+  }, [startingBalance, billsAndLoans, activeMonth, activeYear, totalDays, workProfile, shiftOverrides, currentBankBalance, paymentHistory, hasSetupWorkProfile]);
 
   const totalCommitments = useMemo(() => computeMonthlyTotal(billsAndLoans, activeMonth, activeYear, "bill+loan"), [billsAndLoans, activeMonth, activeYear]);
   const paidAmount = useMemo(() => computePaidTotal(billsAndLoans, activeMonth, activeYear, paymentHistory, "bill+loan"), [billsAndLoans, activeMonth, activeYear, paymentHistory]);
-  const totalIncome = useMemo(() => computeMonthlyTotal(billsAndLoans, activeMonth, activeYear, "income") + shiftIncomeTotal, [billsAndLoans, activeMonth, activeYear, shiftIncomeTotal]);
+  const totalIncome = useMemo(() => computeMonthlyTotal(billsAndLoans, activeMonth, activeYear, "income") + (hasSetupWorkProfile ? shiftIncomeTotal : 0), [billsAndLoans, activeMonth, activeYear, shiftIncomeTotal, hasSetupWorkProfile]);
 
   const remaining = totalCommitments - paidAmount;
   const expItems = activeItems.filter(i => i.type !== "income");
