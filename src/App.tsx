@@ -2820,7 +2820,8 @@ export default function App() {
       {/* ── CALENDAR GRID ──────────────────────── */}
       <main className="max-w-7xl mx-auto px-4 py-6 relative z-10">
         {/* Forecasting & Cash Flow Panel */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {viewMode === "income" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {/* Current Cash on Hand (Today) Card */}
           <div className={`rounded-2xl p-4 border transition-all duration-300 ${
             isDark ? "bg-zinc-950 border-zinc-900 shadow-sm" : "bg-white border-slate-200 shadow-sm"
@@ -2913,6 +2914,7 @@ export default function App() {
             </p>
           </div>
         </div>
+        )}
         {/* Day headers */}
         <div className="grid grid-cols-7 gap-1.5 md:gap-2 mb-1.5">
           {DAY_LABELS.map((label) => (
