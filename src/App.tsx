@@ -281,44 +281,44 @@ export function getThemeTokens(theme: ThemeMode) {
   switch (theme) {
     case "beige":
       return {
-        bg: "bg-[#f7f4ee] text-[#3c342a]",
-        border: "border-[#e6dfd3]",
-        cardBg: "bg-[#fefcf8] border-[#e6dfd3] shadow-sm text-[#3c342a]",
-        headerBg: "bg-[#f7f4ee]/90 border-[#e6dfd3]",
-        textMuted: "text-[#8a7f70]",
-        textSub: "text-[#5a4f41] font-bold",
-        textTitle: "text-[#2d251e]",
-        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
-        secondaryBtn: "bg-[#eae3d5] hover:bg-[#ded5c4] border-[#d8cebc] text-[#3c342a]",
-        inputBg: "bg-[#f7f4ee] border-[#e6dfd3] text-[#3c342a]",
-        modalBg: "bg-[#fefcf8] border-[#e6dfd3]",
+        bg: "bg-[#f2ebe1] text-[#2c2218]",
+        border: "border-[#d8cbba]",
+        cardBg: "bg-[#faf6ee] border-[#d8cbba] shadow-sm text-[#2c2218]",
+        headerBg: "bg-[#e6decb]/95 border-[#d8cbba]",
+        textMuted: "text-[#786856]",
+        textSub: "text-[#4a3b2c] font-bold",
+        textTitle: "text-[#2c2218]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-600/15 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-[#e2d6c3] hover:bg-[#d4c6b0] border-[#cbbca4] text-[#2c2218]",
+        inputBg: "bg-[#faf6ee] border-[#d8cbba] text-[#2c2218]",
+        modalBg: "bg-[#faf6ee] border-[#d8cbba]",
       };
     case "sage":
       return {
-        bg: "bg-[#edf2ee] text-[#243828]",
-        border: "border-[#d3dfd5]",
-        cardBg: "bg-[#f8faf8] border-[#d3dfd5] shadow-sm text-[#243828]",
-        headerBg: "bg-[#edf2ee]/90 border-[#d3dfd5]",
-        textMuted: "text-[#6b8270]",
-        textSub: "text-[#415745] font-bold",
-        textTitle: "text-[#1b2d1f]",
-        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
-        secondaryBtn: "bg-[#dae5dc] hover:bg-[#ccdcd0] border-[#c2d4c6] text-[#243828]",
-        inputBg: "bg-[#edf2ee] border-[#d3dfd5] text-[#243828]",
-        modalBg: "bg-[#f8faf8] border-[#d3dfd5]",
+        bg: "bg-[#e2ebe3] text-[#172b1b]",
+        border: "border-[#b8ccbc]",
+        cardBg: "bg-[#f3f7f4] border-[#b8ccbc] shadow-sm text-[#172b1b]",
+        headerBg: "bg-[#d4e2d6]/95 border-[#b8ccbc]",
+        textMuted: "text-[#526b57]",
+        textSub: "text-[#2c4731] font-bold",
+        textTitle: "text-[#172b1b]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-600/15 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-[#c8dcd0] hover:bg-[#b6cebf] border-[#a4c0ae] text-[#172b1b]",
+        inputBg: "bg-[#f3f7f4] border-[#b8ccbc] text-[#172b1b]",
+        modalBg: "bg-[#f3f7f4] border-[#b8ccbc]",
       };
     case "light":
       return {
-        bg: "bg-gradient-to-tr from-[#f4f5f7] via-pink-50/20 to-[#f1f3f6] text-black",
-        border: "border-black/50",
-        cardBg: "bg-white border-black/50 shadow-sm text-black",
-        headerBg: "bg-[#f4f5f7]/85 border-black/50",
-        textMuted: "text-black/60",
-        textSub: "text-black font-bold",
-        textTitle: "text-black",
-        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
-        secondaryBtn: "bg-slate-100 hover:bg-slate-200 border-black/50 text-black",
-        inputBg: "bg-slate-50 border-slate-200 text-slate-800",
+        bg: "bg-[#f1f5f9] text-[#0f172a]",
+        border: "border-[#cbd5e1]",
+        cardBg: "bg-white border-[#cbd5e1] shadow-sm text-[#0f172a]",
+        headerBg: "bg-white/95 border-[#cbd5e1]",
+        textMuted: "text-[#64748b]",
+        textSub: "text-[#334155] font-bold",
+        textTitle: "text-[#0f172a]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-600/15 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-slate-200 hover:bg-slate-300 border-[#cbd5e1] text-slate-800",
+        inputBg: "bg-slate-50 border-slate-300 text-slate-900",
         modalBg: "bg-white border-slate-200",
       };
     case "dark":
@@ -2953,15 +2953,25 @@ export default function App() {
     <div className={`min-h-screen relative overflow-hidden font-sans transition-colors duration-300 ${s.bg}`}>
       {/* Dynamic radial gradient glow overlays */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {isDark ? (
+        {theme === "dark" ? (
           <>
             <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[50%] rounded-full bg-pink-900/5 blur-[120px]" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-pink-950/5 blur-[100px]" />
           </>
+        ) : theme === "beige" ? (
+          <>
+            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-amber-600/10 blur-[130px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-amber-700/5 blur-[120px]" />
+          </>
+        ) : theme === "sage" ? (
+          <>
+            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-emerald-600/10 blur-[130px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-700/5 blur-[120px]" />
+          </>
         ) : (
           <>
-            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-pink-300/10 blur-[130px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-pink-400/5 blur-[120px]" />
+            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-slate-300/20 blur-[130px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-slate-400/10 blur-[120px]" />
           </>
         )}
       </div>
@@ -3058,13 +3068,13 @@ export default function App() {
           </div>
 
           {/* View Toggle */}
-          <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${isDark ? "bg-zinc-900 border border-zinc-800" : "bg-slate-100 border border-slate-200"}`}>
-             <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? isDark ? "bg-zinc-800 text-zinc-100 shadow-sm" : "bg-white text-slate-800 shadow-sm" : isDark ? "text-zinc-500 hover:text-zinc-300" : "text-slate-500 hover:text-slate-700"}`}>Expenses</button>
+          <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${s.secondaryBtn}`}>
+             <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? s.primaryBtn : s.textMuted}`}>Expenses</button>
              {/* Income & Balance — locked while under improvement */}
              <button
                onClick={() => setShowComingSoon(true)}
                title="Coming Soon"
-               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all cursor-not-allowed select-none ${isDark ? "text-zinc-600 hover:text-zinc-500" : "text-slate-400 hover:text-slate-500"}`}
+               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all cursor-not-allowed select-none opacity-60 ${s.textMuted}`}
              >
                <Lock size={10} className="shrink-0" />
                <span>Income &amp; Balance</span>
@@ -3077,10 +3087,10 @@ export default function App() {
               <div className={`col-span-2 md:col-span-1 rounded-xl p-3 border transition-colors duration-300 ${s.cardBg}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <DollarSign size={14} className="text-pink-600" />
-                  <span className={`text-xs font-semibold ${isDark ? "text-pink-400" : "text-slate-700"}`}>Total Commitments</span>
+                  <span className={`text-xs font-semibold ${s.textSub}`}>Total Commitments</span>
                 </div>
                 <p className="text-2xl font-black">{fmt(totalCommitments)}</p>
-                <p className={`text-[10px] mt-0.5 font-medium ${isDark ? "text-pink-500/70" : "text-slate-500"}`}>{totalCount} items active</p>
+                <p className={`text-[10px] mt-0.5 font-medium ${s.textMuted}`}>{totalCount} items active</p>
               </div>
 
               <div className={`rounded-xl p-3 border transition-colors duration-300 ${s.cardBg}`}>
