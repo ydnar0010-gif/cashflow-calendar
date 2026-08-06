@@ -277,6 +277,68 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { id: "sage",  name: "Sage",  swatchBg: "#edf2ee", swatchBorder: "#c2d4c6", swatchDot: "#059669" },
 ];
 
+export function getThemeTokens(theme: ThemeMode) {
+  switch (theme) {
+    case "beige":
+      return {
+        bg: "bg-[#f7f4ee] text-[#3c342a]",
+        border: "border-[#e6dfd3]",
+        cardBg: "bg-[#fefcf8] border-[#e6dfd3] shadow-sm text-[#3c342a]",
+        headerBg: "bg-[#f7f4ee]/90 border-[#e6dfd3]",
+        textMuted: "text-[#8a7f70]",
+        textSub: "text-[#5a4f41] font-bold",
+        textTitle: "text-[#2d251e]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-[#eae3d5] hover:bg-[#ded5c4] border-[#d8cebc] text-[#3c342a]",
+        inputBg: "bg-[#f7f4ee] border-[#e6dfd3] text-[#3c342a]",
+        modalBg: "bg-[#fefcf8] border-[#e6dfd3]",
+      };
+    case "sage":
+      return {
+        bg: "bg-[#edf2ee] text-[#243828]",
+        border: "border-[#d3dfd5]",
+        cardBg: "bg-[#f8faf8] border-[#d3dfd5] shadow-sm text-[#243828]",
+        headerBg: "bg-[#edf2ee]/90 border-[#d3dfd5]",
+        textMuted: "text-[#6b8270]",
+        textSub: "text-[#415745] font-bold",
+        textTitle: "text-[#1b2d1f]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-[#dae5dc] hover:bg-[#ccdcd0] border-[#c2d4c6] text-[#243828]",
+        inputBg: "bg-[#edf2ee] border-[#d3dfd5] text-[#243828]",
+        modalBg: "bg-[#f8faf8] border-[#d3dfd5]",
+      };
+    case "light":
+      return {
+        bg: "bg-gradient-to-tr from-[#f4f5f7] via-pink-50/20 to-[#f1f3f6] text-black",
+        border: "border-black/50",
+        cardBg: "bg-white border-black/50 shadow-sm text-black",
+        headerBg: "bg-[#f4f5f7]/85 border-black/50",
+        textMuted: "text-black/60",
+        textSub: "text-black font-bold",
+        textTitle: "text-black",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-slate-100 hover:bg-slate-200 border-black/50 text-black",
+        inputBg: "bg-slate-50 border-slate-200 text-slate-800",
+        modalBg: "bg-white border-slate-200",
+      };
+    case "dark":
+    default:
+      return {
+        bg: "bg-[#09090b] text-zinc-150",
+        border: "border-zinc-900/60",
+        cardBg: "bg-gradient-to-br from-pink-950/20 to-pink-900/10 border-pink-500/50 text-pink-500",
+        headerBg: "bg-[#09090b]/85 border-zinc-900/60",
+        textMuted: "text-pink-400",
+        textSub: "text-pink-500 font-bold",
+        textTitle: "text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]",
+        primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
+        secondaryBtn: "bg-zinc-900 hover:bg-zinc-850 border-pink-500/40 text-pink-500 hover:text-pink-400",
+        inputBg: "bg-zinc-900 border-zinc-800 text-zinc-100",
+        modalBg: "bg-zinc-950 border-zinc-900",
+      };
+  }
+}
+
 interface ThemePickerProps {
   selected: ThemeMode;
   onChange: (t: ThemeMode) => void;
@@ -718,9 +780,32 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
   if (viewMode === "income") {
     visibleItems = dayItems.filter(i => i.type === "income");
   }
-  
-  const hasDue = visibleItems.length > 0 || (viewMode === "income" && shiftEarnings && shiftEarnings.status !== "rest" && shiftEarnings.status !== "vto");
+
   const isDark = theme === "dark";
+
+  const getCellBg = () => {
+    if (isToday) {
+      if (theme === "dark") return "bg-pink-950/40 border-pink-500/60 shadow-[0_0_12px_rgba(236,72,153,0.2)]";
+      if (theme === "beige") return "bg-[#eae2d3] border-amber-600/60 shadow-sm";
+      if (theme === "sage") return "bg-[#d8e6da] border-emerald-600/60 shadow-sm";
+      return "bg-pink-100 border-pink-400 shadow-sm";
+    }
+    switch (theme) {
+      case "beige": return "bg-[#fefcf8] border-[#e6dfd3] hover:border-amber-600/40";
+      case "sage": return "bg-[#f8faf8] border-[#d3dfd5] hover:border-emerald-600/40";
+      case "light": return "bg-white border-slate-200 hover:border-slate-300";
+      case "dark": default: return "bg-zinc-950/90 border-zinc-900/80 hover:border-zinc-700/60";
+    }
+  };
+
+  const getCellText = () => {
+    switch (theme) {
+      case "beige": return "text-[#3c342a]";
+      case "sage": return "text-[#243828]";
+      case "light": return "text-slate-800";
+      case "dark": default: return "text-zinc-200";
+    }
+  };
 
   return (
     <div 
@@ -731,21 +816,14 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
           onSelectDay(day);
         }
       }}
-      className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 p-1 sm:p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200 cursor-pointer
-      ${viewMode === "income" ? "hover:border-emerald-400/60" : "sm:cursor-default"}
-      ${isToday 
-        ? "border-pink-500 bg-pink-500/5 shadow-lg shadow-pink-500/5"
-        : hasDue 
-          ? isDark ? "border-zinc-700/80 bg-zinc-900/40" : "border-pink-400/80 bg-pink-50/25"
-          : isDark ? "border-zinc-800/80 bg-zinc-950/60" : "border-slate-350 bg-slate-50/60"}`}
+      className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 p-1 sm:p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200 cursor-pointer ${viewMode === "income" ? "hover:border-emerald-400/60" : "sm:cursor-default"} ${getCellBg()}`}
     >
       <div className="flex items-center justify-between mb-0.5">
-        <span className={`text-xs md:text-sm font-bold leading-none
-          ${isToday 
+        <span className={`text-xs md:text-sm font-bold leading-none ${
+          isToday 
             ? "bg-pink-600 text-white w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] sm:text-xs shadow-md shadow-pink-500/20"
-            : hasDue 
-              ? isDark ? "text-zinc-300" : "text-slate-800" 
-              : isDark ? "text-zinc-500" : "text-slate-400"}`}>
+            : getCellText()
+        }`}>
           {day}
         </span>
         {dayItems.length > 1 && (
@@ -2482,7 +2560,10 @@ export default function App() {
   useEffect(() => { localStorage.setItem("cashflow_bills", JSON.stringify(billsAndLoans)); }, [billsAndLoans]);
   useEffect(() => { localStorage.setItem("cashflow_payments", JSON.stringify(paymentHistory)); }, [paymentHistory]);
   useEffect(() => { localStorage.setItem("cashflow_currency", JSON.stringify(currency.code)); }, [currency]);
-  useEffect(() => { localStorage.setItem("cashflow_theme", theme); }, [theme]);
+  useEffect(() => { 
+    localStorage.setItem("cashflow_theme", theme);
+    console.log("[CashFlow Theme Updated]:", theme);
+  }, [theme]);
 
   // UI state
   const [viewMode, setViewMode] = useState<"expenses" | "income">("expenses");
@@ -2866,21 +2947,7 @@ export default function App() {
   const isDark = theme === "dark";
 
   // Dynamic Theme Class Tokens
-  const s = {
-    bg: isDark ? "bg-[#09090b] text-zinc-150" : "bg-gradient-to-tr from-[#f4f5f7] via-pink-50/20 to-[#f1f3f6] text-black",
-    border: isDark ? "border-zinc-900/60" : "border-black/50",
-    cardBg: isDark 
-      ? "bg-gradient-to-br from-pink-950/20 to-pink-900/10 border-pink-500/50 text-pink-500" 
-      : "bg-white border-black/50 shadow-sm text-black",
-    headerBg: isDark ? "bg-[#09090b]/85 border-zinc-900/60" : "bg-[#f4f5f7]/85 border-black/50",
-    textMuted: isDark ? "text-pink-400" : "text-black/60",
-    textSub: isDark ? "text-pink-500 font-bold" : "text-black font-bold",
-    textTitle: isDark ? "text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]" : "text-black",
-    primaryBtn: "bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/10 active:scale-[0.98] transition-all",
-    secondaryBtn: isDark 
-      ? "bg-zinc-900 hover:bg-zinc-850 border-pink-500/40 text-pink-500 hover:text-pink-400" 
-      : "bg-slate-100 hover:bg-slate-200 border-black/50 text-black",
-  };
+  const s = getThemeTokens(theme);
 
   return (
     <div className={`min-h-screen relative overflow-hidden font-sans transition-colors duration-300 ${s.bg}`}>
