@@ -308,55 +308,133 @@ function CurrencyPicker({ selected, onChange }: CurrencyPickerProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/60 z-50 overflow-hidden">
-          {/* Search */}
-          <div className="p-2 border-b border-slate-800">
-            <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-3 py-2">
-              <Search size={13} className="text-slate-500 shrink-0" />
-              <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search currency…"
-                className="flex-1 bg-transparent text-xs text-slate-200 placeholder:text-slate-600 outline-none"
-              />
-              {query && (
-                <button onClick={() => setQuery("")} className="text-slate-600 hover:text-slate-300 transition-colors">
-                  <X size={12} />
+        <>
+          {/* Mobile backdrop & bottom sheet container (<640px) */}
+          <div
+            className="sm:hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end justify-center p-0 animate-in fade-in duration-200"
+            onClick={() => setOpen(false)}
+          >
+            <div
+              className="w-full bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-4 shadow-2xl flex flex-col max-h-[82vh] overflow-hidden animate-in slide-in-from-bottom duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Sheet handle & title */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+                <div className="flex items-center gap-2">
+                  <Coins size={18} className="text-amber-400" />
+                  <h3 className="text-sm font-bold text-slate-100">Select Currency</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
+                >
+                  <X size={16} />
                 </button>
-              )}
+              </div>
+
+              {/* Search */}
+              <div className="py-3 shrink-0">
+                <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-3 py-2.5">
+                  <Search size={15} className="text-slate-400 shrink-0" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search currency name or code…"
+                    className="flex-1 bg-transparent text-sm text-slate-100 placeholder:text-slate-500 outline-none"
+                  />
+                  {query && (
+                    <button type="button" onClick={() => setQuery("")} className="text-slate-500 hover:text-slate-300">
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Scrollable list */}
+              <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5 py-1">
+                {filtered.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-slate-500 text-sm">No currencies found</div>
+                ) : (
+                  filtered.map((c) => {
+                    const isActive = c.code === selected.code;
+                    return (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { onChange(c); setOpen(false); }}
+                        className={`w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors duration-150 active:scale-[0.99]
+                          ${isActive ? "bg-indigo-600/30 text-indigo-100 border border-indigo-500/40" : "bg-slate-800/40 hover:bg-slate-800 text-slate-200"}`}
+                      >
+                        <span className={`w-8 text-center text-base font-bold shrink-0 ${isActive ? "text-amber-300" : "text-slate-400"}`}>
+                          {c.symbol}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold truncate">{c.name}</p>
+                          <p className="text-xs text-slate-400">{c.code}</p>
+                        </div>
+                        {isActive && <CheckCircle2 size={18} className="text-amber-400 shrink-0" />}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </div>
 
-          {/* List */}
-          <div className="max-h-64 overflow-y-auto py-1">
-            {filtered.length === 0 ? (
-              <div className="px-4 py-6 text-center text-slate-600 text-xs">No currencies found</div>
-            ) : (
-              filtered.map((c) => {
-                const isActive = c.code === selected.code;
-                return (
-                  <button
-                    key={c.code}
-                    onClick={() => { onChange(c); setOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors duration-150
-                      ${isActive ? "bg-indigo-600/20 text-indigo-200" : "hover:bg-slate-800 text-slate-300"}`}
-                  >
-                    <span className={`w-8 text-center text-sm font-bold shrink-0 ${isActive ? "text-amber-300" : "text-slate-500"}`}>
-                      {c.symbol}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold truncate">{c.name}</p>
-                      <p className="text-[10px] text-slate-500">{c.code}</p>
-                    </div>
-                    {isActive && <CheckCircle2 size={13} className="text-indigo-400 shrink-0" />}
+          {/* Desktop floating dropdown (>=640px) */}
+          <div className="hidden sm:block absolute right-0 top-full mt-2 w-72 bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/60 z-50 overflow-hidden">
+            {/* Search */}
+            <div className="p-2 border-b border-slate-800">
+              <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-3 py-2">
+                <Search size={13} className="text-slate-500 shrink-0" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search currency…"
+                  className="flex-1 bg-transparent text-xs text-slate-200 placeholder:text-slate-600 outline-none"
+                />
+                {query && (
+                  <button type="button" onClick={() => setQuery("")} className="text-slate-600 hover:text-slate-300 transition-colors">
+                    <X size={12} />
                   </button>
-                );
-              })
-            )}
+                )}
+              </div>
+            </div>
+
+            {/* List */}
+            <div className="max-h-64 overflow-y-auto py-1">
+              {filtered.length === 0 ? (
+                <div className="px-4 py-6 text-center text-slate-600 text-xs">No currencies found</div>
+              ) : (
+                filtered.map((c) => {
+                  const isActive = c.code === selected.code;
+                  return (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => { onChange(c); setOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 min-h-[44px] text-left transition-colors duration-150
+                        ${isActive ? "bg-indigo-600/20 text-indigo-200" : "hover:bg-slate-800 text-slate-300"}`}
+                    >
+                      <span className={`w-8 text-center text-sm font-bold shrink-0 ${isActive ? "text-amber-300" : "text-slate-500"}`}>
+                        {c.symbol}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold truncate">{c.name}</p>
+                        <p className="text-[10px] text-slate-500">{c.code}</p>
+                      </div>
+                      {isActive && <CheckCircle2 size={13} className="text-indigo-400 shrink-0" />}
+                    </button>
+                  );
+                })
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
@@ -1056,7 +1134,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
         </label>
         <div className="grid grid-cols-2 gap-2">
           <select value={form.start_month} onChange={(e) => setForm((f) => ({ ...f, start_month: e.target.value }))}
-            className={`border rounded-xl px-3 py-2.5 text-sm outline-none transition-all ${
+            className={`border rounded-xl px-3 py-3 min-h-[44px] text-base sm:text-sm outline-none transition-all ${
               isDark 
                 ? "bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-pink-500/60 [color-scheme:dark]" 
                 : "bg-slate-50 border-slate-200 text-slate-800 focus:border-pink-500/50"
@@ -1064,7 +1142,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
             {MONTH_NAMES.map((m, i) => <option key={i} value={i}>{m}</option>)}
           </select>
           <select value={form.start_year} onChange={(e) => setForm((f) => ({ ...f, start_year: e.target.value }))}
-            className={`border rounded-xl px-3 py-2.5 text-sm outline-none transition-all ${
+            className={`border rounded-xl px-3 py-3 min-h-[44px] text-base sm:text-sm outline-none transition-all ${
               isDark 
                 ? "bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-pink-500/60 [color-scheme:dark]" 
                 : "bg-slate-50 border-slate-200 text-slate-800 focus:border-pink-500/50"
@@ -1357,7 +1435,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
                   <span className="flex items-center gap-1.5"><CalendarDays size={11} /> Day of the Week</span>
                 </label>
                 <select value={form.due_day_of_week} onChange={setField("due_day_of_week")}
-                  className={`w-full border rounded-xl px-3 py-2.5 text-sm outline-none transition-all ${
+                  className={`w-full border rounded-xl px-3 py-3 min-h-[44px] text-base sm:text-sm outline-none transition-all ${
                     isDark 
                       ? "bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-pink-500/60 [color-scheme:dark]" 
                       : "bg-slate-50 border-slate-200 text-slate-800 focus:border-pink-500/50"
