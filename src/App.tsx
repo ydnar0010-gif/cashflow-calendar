@@ -29,6 +29,8 @@ import {
   Moon,
   Wallet,
   Lock,
+  Download,
+  Upload,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────
@@ -1751,7 +1753,69 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
         </div>
 
         {/* Footer — danger zone */}
-        <div className={`px-4 sm:px-5 py-4 border-t ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
+        <div className={`px-4 sm:px-5 py-4 border-t space-y-4 ${isDark ? "border-zinc-900/80 bg-zinc-950" : "border-slate-150 bg-white"}`}>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                try {
+                  const keys = ["cashflow_bills_loans", "cashflow_history", "cashflow_work_profile", "cashflow_shift_overrides", "cashflow_currency", "cashflow_theme", "cashflow_bank_balance", "cashflow_has_setup_work", "cashflow_start_date"];
+                  const data: Record<string, string | null> = {};
+                  keys.forEach(k => data[k] = localStorage.getItem(k));
+                  const backup = { version: 1, timestamp: new Date().toISOString(), data };
+                  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `cashflow-backup-${new Date().toISOString().split("T")[0]}.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                } catch (e) {
+                  alert("Failed to export backup: " + (e instanceof Error ? e.message : "Unknown error"));
+                }
+              }}
+              className={`flex-1 py-2 flex items-center justify-center gap-2 rounded-xl border text-xs font-semibold transition-colors ${s.secondaryBtn}`}
+            >
+              <Download size={14} />
+              Export Backup
+            </button>
+            <label className={`flex-1 py-2 flex items-center justify-center gap-2 rounded-xl border text-xs font-semibold transition-colors cursor-pointer ${s.secondaryBtn}`}>
+              <Upload size={14} />
+              Import Backup
+              <input
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (evt) => {
+                    try {
+                      const str = evt.target?.result as string;
+                      const parsed = JSON.parse(str);
+                      if (parsed.version !== 1 || !parsed.data) {
+                        throw new Error("Invalid backup file format.");
+                      }
+                      if (window.confirm("This will replace your current data with the backup. Continue?")) {
+                        Object.entries(parsed.data).forEach(([k, v]) => {
+                          if (v === null) localStorage.removeItem(k);
+                          else localStorage.setItem(k, v as string);
+                        });
+                        window.location.reload();
+                      }
+                    } catch (err) {
+                      alert("Failed to import backup: " + (err instanceof Error ? err.message : "Unknown error"));
+                    }
+                    e.target.value = "";
+                  };
+                  reader.readAsText(file);
+                }}
+              />
+            </label>
+          </div>
+
           {!confirmAll ? (
             <div className="flex items-center gap-3">
               <button
