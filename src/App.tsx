@@ -25,13 +25,12 @@ import {
   CalendarPlus,
   Tag,
   Hash,
-  Sun,
-  Moon,
   Wallet,
   Lock,
   Download,
   Upload,
   ArrowUpRight,
+  Palette,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────
@@ -258,8 +257,153 @@ function formatCurrency(amount: number, currency: Currency): string {
 }
 
 // ─────────────────────────────────────────────
-//  CURRENCY PICKER COMPONENT
+//  THEME SYSTEM
 // ─────────────────────────────────────────────
+
+export type ThemeMode = "dark" | "light" | "beige" | "sage";
+
+export interface ThemeOption {
+  id: ThemeMode;
+  name: string;
+  swatchBg: string;
+  swatchBorder: string;
+  swatchDot: string;
+}
+
+export const THEME_OPTIONS: ThemeOption[] = [
+  { id: "dark",  name: "Dark",  swatchBg: "#09090b", swatchBorder: "#27272a", swatchDot: "#ec4899" },
+  { id: "light", name: "Light", swatchBg: "#ffffff", swatchBorder: "#cbd5e1", swatchDot: "#db2777" },
+  { id: "beige", name: "Beige", swatchBg: "#f7f4ee", swatchBorder: "#d8cebc", swatchDot: "#d97706" },
+  { id: "sage",  name: "Sage",  swatchBg: "#edf2ee", swatchBorder: "#c2d4c6", swatchDot: "#059669" },
+];
+
+interface ThemePickerProps {
+  selected: ThemeMode;
+  onChange: (t: ThemeMode) => void;
+}
+
+function ThemePicker({ selected, onChange }: ThemePickerProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const currentOption = THEME_OPTIONS.find(t => t.id === selected) || THEME_OPTIONS[0];
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        title="Choose theme"
+        className={`p-2.5 rounded-xl border flex items-center justify-center gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 ${
+          selected === "dark"
+            ? "bg-zinc-900 border-zinc-800 text-pink-400 hover:text-pink-300 hover:bg-zinc-850"
+            : selected === "light"
+            ? "bg-white border-slate-200 text-pink-650 hover:text-pink-550 hover:bg-slate-50 shadow-sm"
+            : selected === "beige"
+            ? "bg-[#f5f0e6] border-[#d8cebc] text-[#8a5b29] hover:bg-[#ede5d6]"
+            : "bg-[#e5eee7] border-[#c2d4c6] text-[#245932] hover:bg-[#d6e4d9]"
+        }`}
+      >
+        <Palette size={15} />
+        <span className="hidden sm:inline text-xs font-bold capitalize">{currentOption.name}</span>
+      </button>
+
+      {open && (
+        <>
+          {/* Mobile bottom sheet (<640px) */}
+          <div
+            className="sm:hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end justify-center p-0 animate-in fade-in duration-200"
+            onClick={() => setOpen(false)}
+          >
+            <div
+              className="w-full bg-slate-900 border-t border-slate-700/80 rounded-t-3xl p-5 shadow-2xl flex flex-col space-y-4 animate-in slide-in-from-bottom duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Palette size={18} className="text-pink-500" />
+                  <h3 className="text-sm font-bold text-slate-100">Select Theme</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 py-1">
+                {THEME_OPTIONS.map((t) => {
+                  const isActive = t.id === selected;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => { onChange(t.id); setOpen(false); }}
+                      className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all active:scale-95 ${
+                        isActive
+                          ? "bg-indigo-600/30 border-pink-500 text-white shadow-md shadow-pink-500/10"
+                          : "bg-slate-800/60 border-slate-700/60 text-slate-300 hover:bg-slate-800"
+                      }`}
+                    >
+                      <div
+                        className="w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 shadow-inner"
+                        style={{ backgroundColor: t.swatchBg, borderColor: t.swatchBorder }}
+                      >
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: t.swatchDot }} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold capitalize">{t.name}</p>
+                      </div>
+                      {isActive && <CheckCircle2 size={16} className="text-pink-500 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop floating dropdown (>=640px) */}
+          <div className="hidden sm:block absolute right-0 top-full mt-2 w-52 bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl z-50 overflow-hidden p-2 space-y-1">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">Theme Palette</p>
+            {THEME_OPTIONS.map((t) => {
+              const isActive = t.id === selected;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => { onChange(t.id); setOpen(false); }}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all min-h-[40px] ${
+                    isActive ? "bg-indigo-600/30 text-white border border-pink-500/40" : "text-slate-300 hover:bg-slate-800"
+                  }`}
+                >
+                  <div
+                    className="w-5 h-5 rounded-full border flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: t.swatchBg, borderColor: t.swatchBorder }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: t.swatchDot }} />
+                  </div>
+                  <span className="flex-1 text-left capitalize">{t.name}</span>
+                  {isActive && <CheckCircle2 size={14} className="text-pink-400 shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 interface CurrencyPickerProps {
   selected: Currency;
@@ -465,7 +609,7 @@ interface EventCardProps {
   missed?: boolean;
   currency: Currency;
   onToggle: (id: string) => void;
-  theme?: "light" | "dark";
+  theme?: ThemeMode;
 }
 
 function EventCard({ item, paid, missed, currency, onToggle, theme = "dark" }: EventCardProps) {
@@ -547,7 +691,7 @@ interface DayCellProps {
   missedBills: Set<string>;
   onToggle: (id: string) => void;
   currency: Currency;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   viewMode: "expenses" | "income";
   shiftEarnings?: { base: number; nd: number; total: number; isWork: boolean; status: ShiftStatus };
   payoutAmount?: number;
@@ -559,7 +703,13 @@ interface DayCellProps {
 function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills, onToggle, currency, theme, viewMode, shiftEarnings, payoutAmount, onEditShift, dailyBalance, onSelectDay }: DayCellProps) {
   if (day === null) {
     return <div className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 ${
-      theme === "dark" ? "bg-zinc-950/20 border-zinc-800/40" : "bg-slate-100/50 border-slate-300"
+      theme === "dark" 
+        ? "bg-zinc-950/20 border-zinc-800/40" 
+        : theme === "beige" 
+        ? "bg-[#f5f0e6]/40 border-[#e6dfd3]/60" 
+        : theme === "sage" 
+        ? "bg-[#e5eee7]/40 border-[#d3dfd5]/60" 
+        : "bg-slate-100/50 border-slate-300"
     }`} />;
   }
 
@@ -692,7 +842,7 @@ interface DayDetailsModalProps {
   missedBills: Set<string>;
   onToggle: (id: string) => void;
   currency: Currency;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   dailyBalance?: number;
   payoutAmount?: number;
   onClose: () => void;
@@ -877,7 +1027,7 @@ function DayDetailsModal({
 interface AddItemModalProps {
   open: boolean;
   currency: Currency;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   initialDueDay?: number;
   onClose: () => void;
   onAdd: (item: BillOrLoan) => void;
@@ -1626,7 +1776,7 @@ interface ManageDrawerProps {
   open: boolean;
   items: BillOrLoan[];
   currency: Currency;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   onClose: () => void;
   onDeleteOne: (id: string) => void;
   onDeleteMany: (ids: string[]) => void;
@@ -2086,7 +2236,7 @@ export function computeWindowPayout(window: SalaryWindow, profile: WorkProfile, 
 interface WorkProfileSetupModalProps {
   open: boolean;
   profile: WorkProfile;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   onClose: () => void;
   onSave: (p: WorkProfile) => void;
 }
@@ -2230,7 +2380,7 @@ interface EditShiftModalProps {
   isoDate: string;
   override?: ShiftOverride;
   profile: WorkProfile;
-  theme: "light" | "dark";
+  theme: ThemeMode;
   onClose: () => void;
   onSave: (o: ShiftOverride | undefined) => void;
 }
@@ -2294,10 +2444,10 @@ export default function App() {
   const [activeMonth, setActiveMonth] = useState(today.getMonth());
 
   // Theme state — persisted to localStorage
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
+  const [theme, setTheme] = useState<ThemeMode>(() => {
     try {
-      const saved = localStorage.getItem("cashflow_theme");
-      return (saved === "light" || saved === "dark") ? saved : "dark";
+      const saved = localStorage.getItem("cashflow_theme") as ThemeMode;
+      return (["dark", "light", "beige", "sage"].includes(saved)) ? saved : "dark";
     } catch { return "dark"; }
   });
 
@@ -2781,17 +2931,7 @@ export default function App() {
                 </button>
 
                 {/* Theme Selector Button */}
-                <button
-                  onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-                  title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
-                    isDark
-                      ? "bg-zinc-900 border-zinc-800 text-pink-400 hover:text-pink-300 hover:bg-zinc-850"
-                      : "bg-white border-slate-200 text-pink-650 hover:text-pink-550 hover:bg-slate-50 shadow-sm"
-                  }`}
-                >
-                  {isDark ? <Sun size={15} /> : <Moon size={15} />}
-                </button>
+                <ThemePicker selected={theme} onChange={setTheme} />
 
                 {/* Work Profile Setup Button */}
                 {viewMode === "income" && (
