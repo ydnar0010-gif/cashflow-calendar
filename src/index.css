@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/* ── Custom Font Families ─────────────────────────── */
+@theme {
+  --font-sans: 'Manrope', 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+
+/* ── Global Base ──────────────────────────────────── */
+*, *::before, *::after {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: 'Manrope', 'Inter', system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* ── Numeric / Display utility ─────────────────────── */
+.font-display {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-feature-settings: "tnum", "zero";
+  letter-spacing: -0.02em;
+}
+
+/* Tighter tracking on large numeric amounts */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

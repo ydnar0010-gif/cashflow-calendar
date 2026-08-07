@@ -760,19 +760,28 @@ interface DayCellProps {
   onEditShift?: (day: number) => void;
   dailyBalance?: number;
   onSelectDay?: (day: number) => void;
+  colIndex?: number; // 0=Sun … 6=Sat — for weekend tinting
 }
 
-function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills, onToggle, currency, theme, viewMode, shiftEarnings, payoutAmount, onEditShift, dailyBalance, onSelectDay }: DayCellProps) {
+function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills, onToggle, currency, theme, viewMode, shiftEarnings, payoutAmount, onEditShift, dailyBalance, onSelectDay, colIndex }: DayCellProps) {
+  const isWeekend = colIndex === 0 || colIndex === 6;
   if (day === null) {
-    return <div className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 ${
-      theme === "dark" 
-        ? "bg-zinc-950/20 border-zinc-800/40" 
-        : theme === "beige" 
-        ? "bg-[#f5f0e6]/40 border-[#e6dfd3]/60" 
-        : theme === "sage" 
-        ? "bg-[#e5eee7]/40 border-[#d3dfd5]/60" 
-        : "bg-slate-100/50 border-slate-300"
-    }`} />;
+    const weekendNull = isWeekend
+      ? theme === "dark"
+        ? "bg-zinc-950/50 border-zinc-800/60"
+        : theme === "beige"
+        ? "bg-[#ede5d8]/70 border-[#d8cbba]/70"
+        : theme === "sage"
+        ? "bg-[#d7e4d9]/60 border-[#b8ccbc]/70"
+        : "bg-slate-200/60 border-slate-300/80"
+      : theme === "dark"
+        ? "bg-zinc-950/20 border-zinc-800/40"
+        : theme === "beige"
+        ? "bg-[#f5f0e6]/40 border-[#e6dfd3]/60"
+        : theme === "sage"
+        ? "bg-[#e5eee7]/40 border-[#d3dfd5]/60"
+        : "bg-slate-100/50 border-slate-300";
+    return <div className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 ${weekendNull}`} />;
   }
 
   const dayItems = getItemsForDay(items, day, month, year);
@@ -816,7 +825,7 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
           onSelectDay(day);
         }
       }}
-      className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 p-1 sm:p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200 cursor-pointer ${viewMode === "income" ? "hover:border-emerald-400/60" : "sm:cursor-default"} ${getCellBg()}`}
+      className={`min-h-[68px] sm:min-h-24 md:min-h-28 rounded-xl border sm:border-2 p-1 sm:p-1.5 md:p-2 flex flex-col gap-1 transition-all duration-200 cursor-pointer ${viewMode === "income" ? "hover:border-emerald-400/60" : "sm:cursor-default"} ${getCellBg()}${isWeekend && !isToday ? " [&:not(:hover)]:brightness-[0.97]" : ""}`}
     >
       <div className="flex items-center justify-between mb-0.5">
         <span className={`text-xs md:text-sm font-bold leading-none ${
@@ -3017,7 +3026,7 @@ export default function App() {
 
       {/* ── HEADER ─────────────────────────────── */}
       <header className={`sticky top-0 z-20 backdrop-blur-xl border-b transition-colors duration-300 ${s.headerBg}`}>
-        <div className="max-w-7xl mx-auto px-4 py-4 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 pt-4 pb-2 relative z-10">
           {/* Title row */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-3">
@@ -3025,13 +3034,13 @@ export default function App() {
                 <CalendarDays size={18} className="text-pink-600" />
               </div>
               <div>
-                <h1 className={`text-lg font-extrabold leading-none tracking-tight ${isDark ? "text-pink-600" : "text-slate-800"}`}>Balanse</h1>
-                <p className={`text-xs mt-0.5 font-medium ${s.textMuted}`}>by Ydnar</p>
+                <h1 className={`text-xl font-display font-bold leading-none tracking-tight ${isDark ? "text-pink-500" : "text-slate-900"}`}>Balanse</h1>
+                <p className={`text-[11px] mt-0.5 font-medium tracking-wide uppercase ${s.textMuted}`}>by Ydnar</p>
               </div>
             </div>
 
             {/* Right controls: stacks vertically on mobile, single row on sm+ */}
-            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
               {/* Action buttons row */}
               <div className="flex items-center gap-1.5 sm:gap-2">
                 {/* Currency picker */}
@@ -3107,7 +3116,7 @@ export default function App() {
           </div>
 
           {/* View Toggle */}
-          <div className={`mt-4 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${s.secondaryBtn}`}>
+          <div className={`mt-6 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${s.secondaryBtn}`}>
              <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? s.primaryBtn : s.textMuted}`}>Expenses</button>
              {/* Income & Balance — locked while under improvement */}
              <button
@@ -3123,50 +3132,50 @@ export default function App() {
           {/* Metric cards */}
           {viewMode === "expenses" ? (
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10 animate-in fade-in zoom-in-95 duration-300">
-              <div className={`col-span-2 md:col-span-1 rounded-xl p-3 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <DollarSign size={14} className="text-pink-600" />
-                  <span className={`text-xs font-semibold ${s.textSub}`}>Total Commitments</span>
+              <div className={`col-span-2 md:col-span-1 rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-2">
+                  <DollarSign size={12} className="text-pink-500/70" />
+                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Total Commitments</span>
                 </div>
-                <p className="text-2xl font-black">{fmt(totalCommitments)}</p>
-                <p className={`text-[10px] mt-0.5 font-medium ${s.textMuted}`}>{totalCount} items active</p>
+                <p className={`text-3xl font-display font-bold leading-none tabular-nums`}>{fmt(totalCommitments)}</p>
+                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{totalCount} items active</p>
               </div>
 
-              <div className={`rounded-xl p-3 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 size={14} className="text-emerald-500" />
-                  <span className={`text-xs font-semibold ${s.textSub}`}>Paid</span>
+              <div className={`rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-2">
+                  <CheckCircle2 size={12} className="text-emerald-500/80" />
+                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Paid</span>
                 </div>
-                <p className="text-2xl font-black text-emerald-500">{fmt(paidAmount)}</p>
-                <p className={`text-[10px] mt-0.5 font-medium ${s.textMuted}`}>{paidCount} of {totalCount} items</p>
+                <p className={`text-3xl font-display font-bold leading-none tabular-nums text-emerald-500`}>{fmt(paidAmount)}</p>
+                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{paidCount} of {totalCount} items</p>
               </div>
 
-              <div className={`rounded-xl p-3 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingDown size={14} className="text-rose-500" />
-                  <span className={`text-xs font-semibold ${s.textSub}`}>Remaining</span>
+              <div className={`rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-2">
+                  <TrendingDown size={12} className="text-rose-500/80" />
+                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Remaining</span>
                 </div>
-                <p className="text-2xl font-black text-rose-500">{fmt(remaining)}</p>
-                <p className={`text-[10px] mt-0.5 font-medium ${s.textMuted}`}>{totalCount - paidCount} items unpaid</p>
+                <p className={`text-3xl font-display font-bold leading-none tabular-nums text-rose-500`}>{fmt(remaining)}</p>
+                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{totalCount - paidCount} items unpaid</p>
               </div>
 
-              <div className={`rounded-xl p-3 border flex flex-col justify-between transition-colors duration-300 ${s.cardBg}`}>
+              <div className={`rounded-xl p-4 border flex flex-col justify-between transition-colors duration-300 ${s.cardBg}`}>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Receipt size={14} className="text-pink-500" />
-                    <span className={`text-xs font-semibold ${s.textSub}`}>Progress</span>
+                  <div className="flex items-center gap-1.5">
+                    <Receipt size={12} className="text-pink-500/70" />
+                    <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Progress</span>
                   </div>
-                  <span className="text-xs font-extrabold text-pink-600">{Math.round(progressPct)}%</span>
+                  <span className={`text-base font-display font-bold text-pink-600`}>{Math.round(progressPct)}%</span>
                 </div>
-                <div className="mt-2">
-                  <div className={`h-2 rounded-full overflow-hidden ${isDark ? "bg-zinc-800" : "bg-slate-100"}`}>
+                <div className="mt-3">
+                  <div className={`h-1.5 rounded-full overflow-hidden ${isDark ? "bg-zinc-800" : "bg-slate-200"}`}>
                     <div
-                      className="h-full bg-gradient-to-r from-pink-500 to-pink-650 rounded-full transition-all duration-700 ease-out"
+                      className="h-full bg-gradient-to-r from-pink-500 to-pink-400 rounded-full transition-all duration-700 ease-out"
                       style={{ width: `${progressPct}%` }}
                     />
                   </div>
                 </div>
-                <p className={`text-[9px] mt-1 font-medium ${s.textMuted}`}>cleared this active month</p>
+                <p className={`text-[9px] mt-2 font-medium ${s.textMuted}`}>cleared this active month</p>
               </div>
             </div>
           ) : (
@@ -3359,12 +3368,15 @@ export default function App() {
         )}
         {/* Day headers */}
         <div className="grid grid-cols-7 gap-1.5 md:gap-2 mb-1.5">
-          {DAY_LABELS.map((label) => (
-            <div key={label} className={`text-center text-xs font-bold py-1 tracking-wide uppercase ${isDark ? "text-zinc-600" : "text-slate-450"}`}>
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{label[0]}</span>
-            </div>
-          ))}
+          {DAY_LABELS.map((label, li) => {
+            const isWknd = li === 0 || li === 6;
+            return (
+              <div key={label} className={`text-center text-[10px] sm:text-xs font-display font-semibold py-1 tracking-widest uppercase ${isWknd ? isDark ? "text-zinc-700" : "text-slate-400" : isDark ? "text-zinc-600" : "text-slate-450"}`}>
+                <span className="hidden sm:inline">{label}</span>
+                <span className="sm:hidden">{label[0]}</span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Day cells */}
@@ -3391,6 +3403,7 @@ export default function App() {
                 onEditShift={setEditShiftDay}
                 dailyBalance={day !== null ? dailyBalances.get(day) : undefined}
                 onSelectDay={setSelectedDayForModal}
+                colIndex={idx % 7}
               />
             );
           })}
