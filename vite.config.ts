@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons.svg'],
       manifest: {
-        name: 'CashFlow Calendar',
-        short_name: 'CashFlow',
-        description: 'Track your bills, loans, and cash flow visually with a beautiful monthly calendar.',
+        name: 'Balanse',
+        short_name: 'Balanse',
+        description: 'Track your bills and loans visually with a beautiful monthly calendar.',
         theme_color: '#09090b',
         background_color: '#09090b',
         display: 'standalone',

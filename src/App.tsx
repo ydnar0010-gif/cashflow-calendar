@@ -1159,6 +1159,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
       : "bg-slate-50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:ring-pink-500/30 focus:border-pink-500/50",
   };
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showIncomeComingSoon, setShowIncomeComingSoon] = useState(false);
   // custom dates list
   const [customDates, setCustomDates] = useState<string[]>([]);
   const [customDateInput, setCustomDateInput] = useState("");
@@ -1551,17 +1552,28 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
           <div>
             <label className={`block text-xs font-semibold mb-2 ${isDark ? "text-zinc-500" : "text-slate-400"}`}>Type</label>
             <div className="grid grid-cols-3 gap-2">
-              {(["bill", "loan", "income"] as ItemType[]).map((t) => (
+              {(["bill", "loan"] as ItemType[]).map((t) => (
                 <button key={t} type="button"
                   onClick={() => setForm((f) => ({ ...f, type: t }))}
                   className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all duration-200
                     ${form.type === t
-                      ? t === "bill" ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-500" : t === "loan" ? "bg-orange-500/10 border-orange-500/50 text-orange-500" : "bg-emerald-500/10 border-emerald-500/50 text-emerald-500"
+                      ? t === "bill" ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-500" : "bg-orange-500/10 border-orange-500/50 text-orange-500"
                       : isDark ? "bg-zinc-900 border-zinc-800 text-zinc-450 hover:text-zinc-200" : "bg-slate-50 border-slate-200 text-slate-450 hover:text-slate-700"}`}
                 >
-                  {t === "bill" ? <Receipt size={14} /> : t === "loan" ? <CreditCard size={14} /> : <Banknote size={14} />} {t}
+                  {t === "bill" ? <Receipt size={14} /> : <CreditCard size={14} />} {t}
                 </button>
               ))}
+              {/* Income — Coming Soon */}
+              <button
+                type="button"
+                onClick={() => setShowIncomeComingSoon(true)}
+                className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all duration-200 opacity-60 cursor-not-allowed ${
+                  isDark ? "bg-zinc-900 border-zinc-800 text-zinc-500" : "bg-slate-50 border-slate-200 text-slate-400"
+                }`}
+              >
+                <Lock size={12} />
+                Income
+              </button>
             </div>
           </div>
 
@@ -1842,6 +1854,33 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
           </div>
         </div>
       )}
+
+      {showIncomeComingSoon && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className={`w-full max-w-sm border rounded-2xl p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200 ${
+            isDark ? "bg-zinc-950 border-zinc-900 text-zinc-100" : "bg-white border-slate-200 text-slate-800"
+          }`}>
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <Lock size={24} className="text-emerald-500" />
+              </div>
+              <div>
+                <h3 className="text-base font-black">Income Tracking — Coming Soon</h3>
+                <p className={`text-xs mt-1.5 leading-relaxed ${isDark ? "text-zinc-400" : "text-slate-500"}`}>
+                  We're still building the Income feature for Balanse. It'll let you track salaries, side income, and more — hang tight! 🚀
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowIncomeComingSoon(false)}
+              className="w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-sm font-bold transition-all shadow-lg shadow-pink-600/15"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2065,15 +2104,15 @@ function ManageDrawer({ open, items, currency, theme, onClose, onDeleteOne, onDe
             <button
               onClick={() => {
                 try {
-                  const keys = ["cashflow_bills_loans", "cashflow_history", "cashflow_work_profile", "cashflow_shift_overrides", "cashflow_currency", "cashflow_theme", "cashflow_bank_balance", "cashflow_has_setup_work", "cashflow_start_date", "cashflow_has_onboarded"];
+                  const keys = ["cashflow_bills", "cashflow_payments", "cashflow_work_profile", "cashflow_shift_overrides", "cashflow_currency", "cashflow_theme", "cashflow_bank_balance", "cashflow_starting_balance", "cashflow_has_setup_work", "cashflow_start_date", "cashflow_has_onboarded"];
                   const data: Record<string, string | null> = {};
                   keys.forEach(k => data[k] = localStorage.getItem(k));
-                  const backup = { version: 1, timestamp: new Date().toISOString(), data };
+                  const backup = { version: 1, appName: "balanse", timestamp: new Date().toISOString(), data };
                   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
-                  a.download = `cashflow-backup-${new Date().toISOString().split("T")[0]}.json`;
+                  a.download = `balanse-backup-${new Date().toISOString().split("T")[0]}.json`;
                   document.body.appendChild(a);
                   a.click();
                   document.body.removeChild(a);
@@ -2562,7 +2601,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem("cashflow_currency", JSON.stringify(currency.code)); }, [currency]);
   useEffect(() => { 
     localStorage.setItem("cashflow_theme", theme);
-    console.log("[CashFlow Theme Updated]:", theme);
+    console.log("[Balanse Theme Updated]:", theme);
   }, [theme]);
 
   // UI state
@@ -2986,7 +3025,7 @@ export default function App() {
                 <CalendarDays size={18} className="text-pink-600" />
               </div>
               <div>
-                <h1 className={`text-lg font-extrabold leading-none tracking-tight ${isDark ? "text-pink-600" : "text-slate-800"}`}>Billz &amp; Utangz</h1>
+                <h1 className={`text-lg font-extrabold leading-none tracking-tight ${isDark ? "text-pink-600" : "text-slate-800"}`}>Balanse</h1>
                 <p className={`text-xs mt-0.5 font-medium ${s.textMuted}`}>by Ydnar</p>
               </div>
             </div>
@@ -3203,11 +3242,11 @@ export default function App() {
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-black flex items-center justify-center sm:justify-start gap-1.5">
-                  <span>Get started with CashFlow Calendar</span>
+                  <span>Get started with Balanse</span>
                   <span className="text-pink-500 font-normal">✨</span>
                 </h3>
                 <p className={`text-xs sm:text-sm mt-0.5 font-medium ${isDark ? "text-zinc-400" : "text-slate-500"}`}>
-                  Tap <strong className="text-pink-500 font-bold">+ Add Item</strong> above to add your first bill, loan, or income!
+                  Tap <strong className="text-pink-500 font-bold">+ Add Item</strong> above to add your first bill or loan!
                 </p>
               </div>
             </div>
