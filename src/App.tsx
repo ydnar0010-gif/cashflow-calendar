@@ -2998,7 +2998,7 @@ export default function App() {
   const s = getThemeTokens(theme);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden font-sans transition-colors duration-300 ${s.bg}`}>
+    <div className={`min-h-screen min-h-dvh relative overflow-x-hidden font-sans transition-colors duration-300 ${s.bg}`}>
       {/* Dynamic radial gradient glow overlays */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {theme === "dark" ? (
@@ -3026,103 +3026,106 @@ export default function App() {
 
       {/* ── HEADER ─────────────────────────────── */}
       <header className={`sticky top-0 z-20 backdrop-blur-xl border-b transition-colors duration-300 ${s.headerBg}`}>
-        <div className="max-w-7xl mx-auto px-4 pt-4 pb-2 relative z-10">
-          {/* Title row */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-2 relative z-10">
+
+          {/* ── Single title + controls row ── */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
-                <CalendarDays size={18} className="text-pink-600" />
+
+            {/* Logo / title */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
+                <CalendarDays size={16} className="text-pink-600" />
               </div>
               <div>
-                <h1 className={`text-xl font-display font-bold leading-none tracking-tight ${isDark ? "text-pink-500" : "text-slate-900"}`}>Balanse</h1>
-                <p className={`text-[11px] mt-0.5 font-medium tracking-wide uppercase ${s.textMuted}`}>by Ydnar</p>
+                <h1 className={`text-base sm:text-xl font-display font-bold leading-none tracking-tight ${isDark ? "text-pink-500" : "text-slate-900"}`}>Balanse</h1>
+                <p className={`text-[10px] sm:text-[11px] mt-0.5 font-medium tracking-wide uppercase hidden xs:block ${s.textMuted}`}>by Ydnar</p>
               </div>
             </div>
 
-            {/* Right controls: stacks vertically on mobile, single row on sm+ */}
-            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
-              {/* Action buttons row */}
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                {/* Currency picker */}
-                <CurrencyPicker selected={currency} onChange={setCurrency} />
+            {/* Right side: all controls in one flex row, wraps gracefully */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
 
-                {/* Reset Data Button */}
-                <button
-                  onClick={() => setResetDataConfirmOpen(true)}
-                  title="Reset All Data"
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
-                >
-                  <Trash2 size={15} />
-                </button>
-
-                {/* Theme Selector Button */}
-                <ThemePicker selected={theme} onChange={setTheme} />
-
-                {/* Work Profile Setup Button */}
-                {viewMode === "income" && (
-                  <button
-                    onClick={() => setWorkProfileOpen(true)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
-                  >
-                    <Settings2 size={14} />
-                    <span className="hidden sm:inline">Work Profile</span>
-                  </button>
-                )}
-
-                {/* Add item button */}
-                <button
-                  onClick={() => { setAddModalInitialDay(undefined); setAddOpen(true); }}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${s.primaryBtn}`}
-                >
-                  <Plus size={14} />
-                  <span className="hidden sm:inline">Add Item</span>
-                </button>
-
-                {/* Manage button */}
-                <button
-                  onClick={() => setManageOpen(true)}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border ${s.secondaryBtn}`}
-                >
-                  <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
-                  <span className="hidden sm:inline">Manage</span>
-                  {billsAndLoans.length > 0 && (
-                    <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
-                      {billsAndLoans.length}
-                    </span>
-                  )}
-                </button>
-              </div>
-
-              {/* Month navigation row */}
-              <div className="flex items-center gap-1.5">
+              {/* Month nav — compact on mobile, visible always */}
+              <div className="flex items-center gap-1">
                 <button
                   onClick={prevMonth}
-                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={15} />
                 </button>
-                <div className="text-center min-w-[5rem] sm:min-w-32">
-                  <p className={`text-sm sm:text-base font-extrabold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
-                  <p className={`text-xs ${s.textMuted}`}>{activeYear}</p>
+                <div className="text-center min-w-[4.5rem] sm:min-w-[7rem]">
+                  <p className={`text-xs sm:text-sm font-display font-bold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
+                  <p className={`text-[10px] sm:text-xs font-medium ${s.textMuted}`}>{activeYear}</p>
                 </div>
                 <button
                   onClick={nextMonth}
-                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 hover:scale-105 ${s.secondaryBtn}`}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
                 >
-                  <ChevronRight size={16} />
+                  <ChevronRight size={15} />
                 </button>
               </div>
+
+              {/* Divider — visible on sm+ */}
+              <div className={`hidden sm:block h-6 w-px ${isDark ? "bg-zinc-800" : "bg-slate-200"}`} />
+
+              {/* Currency picker */}
+              <CurrencyPicker selected={currency} onChange={setCurrency} />
+
+              {/* Theme picker */}
+              <ThemePicker selected={theme} onChange={setTheme} />
+
+              {/* Add item */}
+              <button
+                onClick={() => { setAddModalInitialDay(undefined); setAddOpen(true); }}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 ${s.primaryBtn}`}
+              >
+                <Plus size={14} />
+                <span className="hidden sm:inline">Add Item</span>
+              </button>
+
+              {/* Manage */}
+              <button
+                onClick={() => setManageOpen(true)}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border active:scale-95 ${s.secondaryBtn}`}
+              >
+                <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
+                <span className="hidden sm:inline">Manage</span>
+                {billsAndLoans.length > 0 && (
+                  <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                    {billsAndLoans.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Reset — hidden on mobile by default to reduce clutter, accessible via Manage */}
+              <button
+                onClick={() => setResetDataConfirmOpen(true)}
+                title="Reset All Data"
+                className={`hidden sm:flex w-9 h-9 rounded-xl items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
+              >
+                <Trash2 size={15} />
+              </button>
+
+              {viewMode === "income" && (
+                <button
+                  onClick={() => setWorkProfileOpen(true)}
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                >
+                  <Settings2 size={14} />
+                  <span className="hidden sm:inline">Work Profile</span>
+                </button>
+              )}
             </div>
           </div>
 
           {/* View Toggle */}
-          <div className={`mt-6 flex items-center gap-2 relative z-10 p-1 rounded-xl w-full sm:w-fit ${s.secondaryBtn}`}>
-             <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? s.primaryBtn : s.textMuted}`}>Expenses</button>
+          <div className={`mt-4 flex items-center gap-1.5 relative z-10 p-1 rounded-xl w-full sm:w-fit ${s.secondaryBtn}`}>
+             <button onClick={() => setViewMode("expenses")} className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === "expenses" ? s.primaryBtn : s.textMuted}`}>Expenses</button>
              {/* Income & Balance — locked while under improvement */}
              <button
                onClick={() => setShowComingSoon(true)}
                title="Coming Soon"
-               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-xs font-bold rounded-lg transition-all cursor-not-allowed select-none opacity-60 ${s.textMuted}`}
+               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-not-allowed select-none opacity-60 ${s.textMuted}`}
              >
                <Lock size={10} className="shrink-0" />
                <span>Income &amp; Balance</span>
@@ -3131,32 +3134,32 @@ export default function App() {
 
           {/* Metric cards */}
           {viewMode === "expenses" ? (
-            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10 animate-in fade-in zoom-in-95 duration-300">
-              <div className={`col-span-2 md:col-span-1 rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <DollarSign size={12} className="text-pink-500/70" />
-                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Total Commitments</span>
+            <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 relative z-10 animate-in fade-in zoom-in-95 duration-300">
+              <div className={`col-span-2 md:col-span-1 rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                  <DollarSign size={11} className="text-pink-500/70" />
+                  <span className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Total Commitments</span>
                 </div>
-                <p className={`text-3xl font-display font-bold leading-none tabular-nums`}>{fmt(totalCommitments)}</p>
-                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{totalCount} items active</p>
+                <p className={`text-2xl sm:text-3xl font-display font-bold leading-none tabular-nums`}>{fmt(totalCommitments)}</p>
+                <p className={`text-[9px] sm:text-[10px] mt-1.5 sm:mt-2 font-medium ${s.textMuted}`}>{totalCount} items active</p>
               </div>
 
-              <div className={`rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <CheckCircle2 size={12} className="text-emerald-500/80" />
-                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Paid</span>
+              <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                  <CheckCircle2 size={11} className="text-emerald-500/80" />
+                  <span className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Paid</span>
                 </div>
-                <p className={`text-3xl font-display font-bold leading-none tabular-nums text-emerald-500`}>{fmt(paidAmount)}</p>
-                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{paidCount} of {totalCount} items</p>
+                <p className={`text-2xl sm:text-3xl font-display font-bold leading-none tabular-nums text-emerald-500`}>{fmt(paidAmount)}</p>
+                <p className={`text-[9px] sm:text-[10px] mt-1.5 sm:mt-2 font-medium ${s.textMuted}`}>{paidCount} of {totalCount} items</p>
               </div>
 
-              <div className={`rounded-xl p-4 border transition-colors duration-300 ${s.cardBg}`}>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <TrendingDown size={12} className="text-rose-500/80" />
-                  <span className={`text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Remaining</span>
+              <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${s.cardBg}`}>
+                <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                  <TrendingDown size={11} className="text-rose-500/80" />
+                  <span className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide ${s.textMuted}`}>Remaining</span>
                 </div>
-                <p className={`text-3xl font-display font-bold leading-none tabular-nums text-rose-500`}>{fmt(remaining)}</p>
-                <p className={`text-[10px] mt-2 font-medium ${s.textMuted}`}>{totalCount - paidCount} items unpaid</p>
+                <p className={`text-2xl sm:text-3xl font-display font-bold leading-none tabular-nums text-rose-500`}>{fmt(remaining)}</p>
+                <p className={`text-[9px] sm:text-[10px] mt-1.5 sm:mt-2 font-medium ${s.textMuted}`}>{totalCount - paidCount} items unpaid</p>
               </div>
 
               <div className={`rounded-xl p-4 border flex flex-col justify-between transition-colors duration-300 ${s.cardBg}`}>
@@ -3235,7 +3238,7 @@ export default function App() {
       </header>
 
       {/* ── CALENDAR GRID ──────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 py-6 relative z-10">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-safe relative z-10">
         {/* First-time onboarding nudge */}
         {billsAndLoans.length === 0 && !hasOnboarded && (
           <div className={`mb-6 p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left animate-in fade-in zoom-in-95 duration-300 ${
