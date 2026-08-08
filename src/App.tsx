@@ -896,7 +896,7 @@ function DayCell({ day, isToday, items, month, year, paymentHistory, missedBills
           />
         ))}
       </div>
-      {dailyBalance !== undefined && (
+      {dailyBalance !== undefined && (dayItems.length > 0 || (payoutAmount !== undefined && payoutAmount > 0) || isToday) && (
         <div className="mt-auto pt-1.5 pb-1 flex justify-end shrink-0 w-full overflow-hidden">
           <span className={`text-[9px] sm:text-[10px] font-bold tracking-tight px-1 py-0.5 sm:px-1.5 rounded transition-all duration-200 truncate max-w-full block text-right leading-none
             ${dailyBalance < 0 
