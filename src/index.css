@@ -11,26 +11,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Smooth tap responses on iOS */
-  -webkit-tap-highlight-color: transparent;
-}
-
-html {
-  /* Dynamic viewport height — handles iOS Safari toolbar hide/show */
-  height: 100%;
-  /* Prevent text size boost on orientation change */
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 body {
   font-family: 'Manrope', 'Inter', system-ui, sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  /* No rubber-band overscroll flash */
-  overscroll-behavior: none;
-  /* Full height for standalone PWA */
-  min-height: 100vh;
-  min-height: 100dvh;
 }
 
 /* ── Numeric / Display utility ─────────────────────── */
@@ -43,28 +28,4 @@ body {
 /* Tighter tracking on large numeric amounts */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
-}
-
-/* ── iOS Safe Area utilities ───────────────────────── */
-.pb-safe {
-  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-}
-.pt-safe {
-  padding-top: max(0px, env(safe-area-inset-top));
-}
-
-/* ── Smooth scrolling in modals ────────────────────── */
-.scroll-touch {
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
-}
-
-/* ── Prevent double-tap zoom on buttons ────────────── */
-button, a, [role="button"] {
-  touch-action: manipulation;
-}
-
-/* ── Input zoom prevention on iOS (<16px triggers zoom) */
-input, select, textarea {
-  font-size: max(16px, 1rem);
 }

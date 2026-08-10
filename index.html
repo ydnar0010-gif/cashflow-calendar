@@ -4,68 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
-
-    <!-- Viewport: prevent iOS auto-zoom on input focus -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
-    <!-- Theme / status bar -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f8f7f5"  media="(prefers-color-scheme: light)" />
-
-    <!-- SEO -->
     <meta name="description" content="Track your bills and loans visually with a beautiful monthly calendar." />
-
-    <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Balanse" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    <!-- Android -->
-    <meta name="mobile-web-app-capable" content="yes" />
-
     <title>Balanse — Bills &amp; Loans by Ydnar</title>
-
-    <!-- Critical inline CSS: prevents white flash on iOS before JS loads -->
-    <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body, #root {
-        height: 100%;
-        /* Use dvh (dynamic viewport height) with fallback for older iOS */
-        min-height: 100vh;
-        min-height: 100dvh;
-        background-color: #09090b;
-        color: #f4f4f5;
-        font-family: 'Manrope', 'Inter', system-ui, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        /* Prevent rubber-band overscroll flash on iOS */
-        overscroll-behavior: none;
-      }
-      /* Prevent text inflation on mobile */
-      html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-      /* Loading skeleton shown while JS parses */
-      #root:empty::after {
-        content: '';
-        display: block;
-        width: 48px;
-        height: 48px;
-        margin: 40vh auto 0;
-        border: 3px solid #27272a;
-        border-top-color: #ec4899;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
-      @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
-
-    <!-- Google Fonts: display=swap prevents render-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   </head>
-  <body>
+  <body style="font-family: 'Inter', sans-serif;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
