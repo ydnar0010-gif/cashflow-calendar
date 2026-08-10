@@ -365,7 +365,7 @@ function ThemePicker({ selected, onChange }: ThemePickerProps) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         title="Choose theme"
-        className={`w-11 h-11 sm:w-auto sm:h-auto p-2.5 rounded-xl border flex items-center justify-center gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 ${
+        className={`p-2.5 rounded-xl border flex items-center justify-center gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 ${
           selected === "dark"
             ? "bg-zinc-900 border-zinc-800 text-pink-400 hover:text-pink-300 hover:bg-zinc-850"
             : selected === "light"
@@ -398,7 +398,7 @@ function ThemePicker({ selected, onChange }: ThemePickerProps) {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="w-11 h-11 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
                 >
                   <X size={16} />
                 </button>
@@ -505,7 +505,7 @@ function CurrencyPicker({ selected, onChange }: CurrencyPickerProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 h-11 sm:h-auto px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700/60 hover:border-slate-600 text-slate-300 hover:text-slate-100 text-xs font-semibold transition-all duration-200 group"
+        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700/60 hover:border-slate-600 text-slate-300 hover:text-slate-100 text-xs font-semibold transition-all duration-200 group"
       >
         <Coins size={14} className="text-amber-400" />
         <span className="font-bold text-amber-300">{selected.symbol}</span>
@@ -533,7 +533,7 @@ function CurrencyPicker({ selected, onChange }: CurrencyPickerProps) {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="w-11 h-11 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-slate-200"
                 >
                   <X size={16} />
                 </button>
@@ -976,7 +976,7 @@ function DayDetailsModal({
         </div>
 
         {/* Header */}
-        <div className={`px-4 sm:px-5 md:px-6 py-4 border-b flex items-center justify-between gap-2 ${
+        <div className={`px-5 py-4 border-b flex items-center justify-between gap-2 ${
           isDark ? "border-zinc-900 bg-zinc-950/80" : "border-slate-150 bg-slate-50"
         }`}>
           <div className="min-w-0">
@@ -994,7 +994,7 @@ function DayDetailsModal({
           </div>
           <button
             onClick={onClose}
-            className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors shrink-0 ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${
               isDark ? "bg-zinc-900 text-zinc-400 hover:text-zinc-200" : "bg-slate-200 text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -1334,7 +1334,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
     `w-full border rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 focus:ring-2 ${
       isDark 
         ? `bg-zinc-900 text-zinc-100 placeholder:text-zinc-600 focus:ring-pink-500/40 ${errors[field] ? "border-rose-500/60 focus:border-rose-500" : "border-zinc-800 focus:border-pink-500/60"}`
-        : `bg-slate-50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:ring-pink-500/30 ${errors[field] ? "border-rose-500/60 focus:border-rose-500" : "border-slate-200 focus:border-pink-500/50"}`
+        : `bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-pink-500/30 ${errors[field] ? "border-rose-500/60 focus:border-rose-500" : "border-slate-200 focus:border-pink-500/50"}`
     }`;
 
   // Frequency option metadata
@@ -1530,7 +1530,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
         style={{ animation: "slideUp 0.2s cubic-bezier(0.16,1,0.3,1)" }}
       >
         {/* Modal header */}
-        <div className={`flex items-center justify-between px-4 sm:px-5 md:px-6 py-4 border-b shrink-0 ${isDark ? "border-zinc-900 bg-zinc-950" : "border-slate-150 bg-white"}`}>
+        <div className={`flex items-center justify-between px-5 py-4 border-b shrink-0 ${isDark ? "border-zinc-900 bg-zinc-950" : "border-slate-150 bg-white"}`}>
           <div className="flex items-center gap-2">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
               <CalendarPlus size={15} className="text-pink-600" />
@@ -1546,7 +1546,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
                 onClose();
               }
             }}
-            className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
               isDark ? "bg-zinc-900 text-zinc-400 hover:bg-zinc-850 hover:text-zinc-200" : "bg-slate-100 text-slate-550 hover:bg-slate-200 hover:text-slate-800"
             }`}
           >
@@ -1555,7 +1555,7 @@ function AddItemModal({ open, currency, theme, initialDueDay, onClose, onAdd }: 
         </div>
 
         {/* Scrollable form body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 md:p-6 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 overflow-y-auto flex-1">
 
           {/* ── Type toggle ── */}
           <div>
@@ -3026,116 +3026,95 @@ export default function App() {
 
       {/* ── HEADER ─────────────────────────────── */}
       <header className={`sticky top-0 z-20 backdrop-blur-xl border-b transition-colors duration-300 ${s.headerBg}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 pt-3 sm:pt-4 pb-2 relative z-10">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-2 relative z-10">
 
-          {/* ── Responsive title + controls row ── */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-2">
+          {/* ── Single title + controls row ── */}
+          <div className="flex items-center justify-between gap-2">
 
-            {/* Row 1 (Mobile/Tablet): Logo & Manage */}
-            <div className="flex items-center justify-between w-full lg:w-auto">
-              <div className="flex items-center gap-2.5 shrink-0">
-                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
-                  <CalendarDays size={16} className="text-pink-600" />
+            {/* Logo / title */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${isDark ? "bg-pink-950/20 border border-pink-500/20" : "bg-pink-100 border border-pink-200"}`}>
+                <CalendarDays size={16} className="text-pink-600" />
+              </div>
+              <div>
+                <h1 className={`text-base sm:text-xl font-display font-bold leading-none tracking-tight ${isDark ? "text-pink-500" : "text-slate-900"}`}>Balanse</h1>
+                <p className={`text-[10px] sm:text-[11px] mt-0.5 font-medium tracking-wide uppercase hidden xs:block ${s.textMuted}`}>by Ydnar</p>
+              </div>
+            </div>
+
+            {/* Right side: all controls in one flex row, wraps gracefully */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
+
+              {/* Month nav — compact on mobile, visible always */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={prevMonth}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
+                >
+                  <ChevronLeft size={15} />
+                </button>
+                <div className="text-center min-w-[4.5rem] sm:min-w-[7rem]">
+                  <p className={`text-xs sm:text-sm font-display font-bold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
+                  <p className={`text-[10px] sm:text-xs font-medium ${s.textMuted}`}>{activeYear}</p>
                 </div>
-                <div>
-                  <h1 className={`text-base sm:text-xl font-display font-bold leading-none tracking-tight ${isDark ? "text-pink-500" : "text-slate-900"}`}>Balanse</h1>
-                  <p className={`text-[10px] sm:text-[11px] mt-0.5 font-medium tracking-wide uppercase hidden xs:block ${s.textMuted}`}>by Ydnar</p>
-                </div>
+                <button
+                  onClick={nextMonth}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
+                >
+                  <ChevronRight size={15} />
+                </button>
               </div>
 
-              {/* Mobile/Tablet Manage Button */}
+              {/* Divider — visible on sm+ */}
+              <div className={`hidden sm:block h-6 w-px ${isDark ? "bg-zinc-800" : "bg-slate-200"}`} />
+
+              {/* Currency picker */}
+              <CurrencyPicker selected={currency} onChange={setCurrency} />
+
+              {/* Theme picker */}
+              <ThemePicker selected={theme} onChange={setTheme} />
+
+              {/* Add item */}
+              <button
+                onClick={() => { setAddModalInitialDay(undefined); setAddOpen(true); }}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 ${s.primaryBtn}`}
+              >
+                <Plus size={14} />
+                <span className="hidden sm:inline">Add Item</span>
+              </button>
+
+              {/* Manage */}
               <button
                 onClick={() => setManageOpen(true)}
-                className={`flex lg:hidden w-11 h-11 rounded-xl border items-center justify-center transition-all duration-200 active:scale-95 relative ${s.secondaryBtn}`}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border active:scale-95 ${s.secondaryBtn}`}
               >
-                <Settings2 size={20} />
+                <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
+                <span className="hidden sm:inline">Manage</span>
                 {billsAndLoans.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-pink-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
                     {billsAndLoans.length}
                   </span>
                 )}
               </button>
-            </div>
 
-            {/* Rows 2, 3, 4 (Mobile) -> wraps on Tablet -> single row on Desktop */}
-            <div className="flex flex-col sm:flex-row sm:flex-wrap lg:flex-nowrap items-stretch sm:items-center justify-end gap-3 lg:gap-2 w-full lg:w-auto">
+              {/* Reset — hidden on mobile by default to reduce clutter, accessible via Manage */}
+              <button
+                onClick={() => setResetDataConfirmOpen(true)}
+                title="Reset All Data"
+                className={`hidden sm:flex w-9 h-9 rounded-xl items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
+              >
+                <Trash2 size={15} />
+              </button>
 
-              {/* Row 2 (Mobile): Month Nav */}
-              <div className="flex items-center justify-center gap-2 order-1 sm:order-none w-full sm:w-auto">
+              {viewMode === "income" && (
                 <button
-                  onClick={prevMonth}
-                  className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
+                  onClick={() => setWorkProfileOpen(true)}
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
                 >
-                  <ChevronLeft size={18} className="sm:w-[15px] sm:h-[15px]" />
+                  <Settings2 size={14} />
+                  <span className="hidden sm:inline">Work Profile</span>
                 </button>
-                <div className="text-center min-w-[8rem] sm:min-w-[7rem]">
-                  <p className={`text-sm font-display font-bold tracking-tight ${s.textTitle}`}>{MONTH_NAMES[activeMonth]}</p>
-                  <p className={`text-xs font-medium ${s.textMuted}`}>{activeYear}</p>
-                </div>
-                <button
-                  onClick={nextMonth}
-                  className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center transition-all duration-200 active:scale-95 ${s.secondaryBtn}`}
-                >
-                  <ChevronRight size={18} className="sm:w-[15px] sm:h-[15px]" />
-                </button>
-              </div>
-
-              {/* Divider — visible on lg+ */}
-              <div className={`hidden lg:block h-6 w-px mx-1 ${isDark ? "bg-zinc-800" : "bg-slate-200"}`} />
-
-              {/* Row 3 (Mobile): Controls */}
-              <div className="flex items-center justify-center gap-3 sm:gap-2 order-2 sm:order-none w-full sm:w-auto">
-                <div className="flex-1 sm:flex-none flex justify-center">
-                  <CurrencyPicker selected={currency} onChange={setCurrency} />
-                </div>
-                
-                <button
-                  onClick={() => setResetDataConfirmOpen(true)}
-                  title="Reset All Data"
-                  className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${isDark ? "bg-zinc-800/80 text-rose-400 hover:bg-zinc-700 hover:text-rose-300" : "bg-rose-100/50 text-rose-500 hover:bg-rose-200/50"}`}
-                >
-                  <Trash2 size={18} className="sm:w-[15px] sm:h-[15px]" />
-                </button>
-
-                <div className="flex-1 sm:flex-none flex justify-center">
-                  <ThemePicker selected={theme} onChange={setTheme} />
-                </div>
-
-                {viewMode === "income" && (
-                  <button
-                    onClick={() => setWorkProfileOpen(true)}
-                    className={`flex items-center justify-center w-11 h-11 sm:w-auto sm:px-3 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${isDark ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
-                  >
-                    <Settings2 size={18} className="sm:w-[14px] sm:h-[14px]" />
-                    <span className="hidden sm:inline ml-1.5">Work Profile</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Row 4 (Mobile): Add Item & Desktop Manage */}
-              <div className="flex items-center gap-2 order-3 sm:order-none w-full sm:w-auto">
-                <button
-                  onClick={() => { setAddModalInitialDay(undefined); setAddOpen(true); }}
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 h-11 sm:h-auto sm:px-3 sm:py-2.5 rounded-xl text-sm sm:text-xs font-bold transition-all duration-200 active:scale-95 ${s.primaryBtn}`}
-                >
-                  <Plus size={18} className="sm:w-[14px] sm:h-[14px]" />
-                  <span>Add Item</span>
-                </button>
-
-                {/* Desktop Manage Button */}
-                <button
-                  onClick={() => setManageOpen(true)}
-                  className={`hidden lg:flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group border active:scale-95 ${s.secondaryBtn}`}
-                >
-                  <Settings2 size={14} className="group-hover:rotate-45 transition-transform duration-300" />
-                  <span>Manage</span>
-                  {billsAndLoans.length > 0 && (
-                    <span className="bg-pink-600/20 text-pink-550 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
-                      {billsAndLoans.length}
-                    </span>
-                  )}
-                </button>
-              </div>
+              )}
             </div>
           </div>
 
@@ -3259,7 +3238,7 @@ export default function App() {
       </header>
 
       {/* ── CALENDAR GRID ──────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 py-4 sm:py-6 pb-safe relative z-10">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-safe relative z-10">
         {/* First-time onboarding nudge */}
         {billsAndLoans.length === 0 && !hasOnboarded && (
           <div className={`mb-6 p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left animate-in fade-in zoom-in-95 duration-300 ${
